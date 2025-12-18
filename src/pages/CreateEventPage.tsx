@@ -1,6 +1,6 @@
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { EventForm } from '@/components/events/EventForm';
-import { createEvent } from '@/lib/eventStore';
+import { useCreateEvent } from '@/hooks/useEvents';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,11 +10,18 @@ import { Event } from '@/types/event';
 
 export default function CreateEventPage() {
   const navigate = useNavigate();
+  const createEventMutation = useCreateEvent();
 
   const handleSubmit = (data: Omit<Event, 'id' | 'createdAt' | 'currentAttendees'>) => {
-    const newEvent = createEvent(data);
-    toast.success('Event skapat!');
-    navigate(`/dashboard/events/${newEvent.id}`);
+    createEventMutation.mutate(data, {
+      onSuccess: (newEvent) => {
+        toast.success('Event skapat!');
+        navigate(`/dashboard/events/${newEvent.id}`);
+      },
+      onError: () => {
+        toast.error('Kunde inte skapa event');
+      },
+    });
   };
 
   return (
@@ -35,7 +42,7 @@ export default function CreateEventPage() {
 
         {/* Form */}
         <div className="animate-fade-in stagger-1">
-          <EventForm onSubmit={handleSubmit} />
+          <EventForm onSubmit={handleSubmit} isLoading={createEventMutation.isPending} />
         </div>
       </div>
     </DashboardLayout>

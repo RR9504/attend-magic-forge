@@ -1,5 +1,4 @@
-import { Event } from '@/types/event';
-import { Registration } from '@/types/event';
+import { Event, Registration } from '@/types/event';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -13,17 +12,17 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Download, Search, Trash2, Mail, Users } from 'lucide-react';
 import { useState } from 'react';
-import { exportRegistrationsToCSV, deleteRegistration } from '@/lib/eventStore';
+import { useDeleteRegistration } from '@/hooks/useRegistrations';
 import { toast } from 'sonner';
 
 interface RegistrationListProps {
   event: Event;
   registrations: Registration[];
-  onRefresh: () => void;
 }
 
-export function RegistrationList({ event, registrations, onRefresh }: RegistrationListProps) {
+export function RegistrationList({ event, registrations }: RegistrationListProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const deleteRegistrationMutation = useDeleteRegistration();
 
   const filteredRegistrations = registrations.filter((reg) => {
     const searchLower = searchQuery.toLowerCase();
@@ -32,14 +31,27 @@ export function RegistrationList({ event, registrations, onRefresh }: Registrati
     );
   });
 
-  const handleExport = () => {
-    const csv = exportRegistrationsToCSV(event.id);
-    if (!csv) {
+  const exportToCSV = () => {
+    if (registrations.length === 0) {
       toast.error('Inga anmälningar att exportera');
       return;
     }
 
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const fields = event.formFields.map(f => f.label);
+    const headers = [...fields, 'Registreringsdatum'];
+    
+    const rows = registrations.map(reg => {
+      const values = event.formFields.map(f => String(reg.data[f.name] || ''));
+      values.push(new Date(reg.registeredAt).toLocaleString('sv-SE'));
+      return values;
+    });
+    
+    const csvContent = [
+      headers.join(';'),
+      ...rows.map(row => row.map(v => `"${v}"`).join(';'))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = `${event.title.replace(/\s+/g, '_')}_anmalningar.csv`;
@@ -64,9 +76,13 @@ export function RegistrationList({ event, registrations, onRefresh }: Registrati
 
   const handleDelete = (id: string) => {
     if (window.confirm('Är du säker på att du vill ta bort denna anmälan?')) {
-      deleteRegistration(id);
-      onRefresh();
-      toast.success('Anmälan borttagen');
+      deleteRegistrationMutation.mutate(
+        { id, eventId: event.id },
+        {
+          onSuccess: () => toast.success('Anmälan borttagen'),
+          onError: () => toast.error('Kunde inte ta bort anmälan'),
+        }
+      );
     }
   };
 
@@ -140,7 +156,7 @@ export function RegistrationList({ event, registrations, onRefresh }: Registrati
             <Mail className="w-4 h-4" />
             Kopiera e-post
           </Button>
-          <Button variant="default" onClick={handleExport}>
+          <Button variant="default" onClick={exportToCSV}>
             <Download className="w-4 h-4" />
             Exportera CSV
           </Button>
@@ -194,6 +210,7 @@ export function RegistrationList({ event, registrations, onRefresh }: Registrati
                       size="icon"
                       className="text-muted-foreground hover:text-destructive"
                       onClick={() => handleDelete(reg.id)}
+                      disabled={deleteRegistrationMutation.isPending}
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>

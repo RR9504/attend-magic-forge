@@ -1,43 +1,39 @@
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { EventForm } from '@/components/events/EventForm';
 import { RegistrationList } from '@/components/events/RegistrationList';
-import { getEvent, updateEvent, getEventRegistrations } from '@/lib/eventStore';
+import { useEvent, useUpdateEvent } from '@/hooks/useEvents';
+import { useEventRegistrations } from '@/hooks/useRegistrations';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { ArrowLeft, ExternalLink, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { Event, Registration } from '@/types/event';
-import { useState, useEffect } from 'react';
+import { Event } from '@/types/event';
+import { useEffect } from 'react';
 
 export default function EditEventPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [event, setEvent] = useState<Event | null>(null);
-  const [registrations, setRegistrations] = useState<Registration[]>([]);
-
-  const loadData = () => {
-    if (id) {
-      const eventData = getEvent(id);
-      if (eventData) {
-        setEvent(eventData);
-        setRegistrations(getEventRegistrations(id));
-      } else {
-        navigate('/dashboard/events');
-        toast.error('Event hittades inte');
-      }
-    }
-  };
+  const { data: event, isLoading, error } = useEvent(id || '');
+  const { data: registrations = [] } = useEventRegistrations(id || '');
+  const updateEventMutation = useUpdateEvent();
 
   useEffect(() => {
-    loadData();
-  }, [id]);
+    if (error) {
+      navigate('/dashboard/events');
+      toast.error('Event hittades inte');
+    }
+  }, [error, navigate]);
 
   const handleSubmit = (data: Omit<Event, 'id' | 'createdAt' | 'currentAttendees'>) => {
     if (id) {
-      updateEvent(id, data);
-      toast.success('Event uppdaterat!');
-      loadData();
+      updateEventMutation.mutate(
+        { id, updates: data },
+        {
+          onSuccess: () => toast.success('Event uppdaterat!'),
+          onError: () => toast.error('Kunde inte uppdatera event'),
+        }
+      );
     }
   };
 
@@ -47,7 +43,7 @@ export default function EditEventPage() {
     toast.success('Länk kopierad till urklipp!');
   };
 
-  if (!event) {
+  if (isLoading) {
     return (
       <DashboardLayout>
         <div className="p-6 lg:p-8 flex items-center justify-center min-h-[50vh]">
@@ -55,6 +51,10 @@ export default function EditEventPage() {
         </div>
       </DashboardLayout>
     );
+  }
+
+  if (!event) {
+    return null;
   }
 
   return (
@@ -104,12 +104,15 @@ export default function EditEventPage() {
             <RegistrationList 
               event={event} 
               registrations={registrations} 
-              onRefresh={loadData}
             />
           </TabsContent>
           
           <TabsContent value="settings" className="mt-6">
-            <EventForm initialData={event} onSubmit={handleSubmit} />
+            <EventForm 
+              initialData={event} 
+              onSubmit={handleSubmit} 
+              isLoading={updateEventMutation.isPending}
+            />
           </TabsContent>
         </Tabs>
       </div>

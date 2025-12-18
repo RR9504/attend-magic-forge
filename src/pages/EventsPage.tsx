@@ -1,28 +1,25 @@
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { EventCard } from '@/components/events/EventCard';
-import { getEvents, deleteEvent } from '@/lib/eventStore';
-import { useState, useEffect } from 'react';
-import { Event } from '@/types/event';
+import { useEvents, useDeleteEvent } from '@/hooks/useEvents';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Link } from 'react-router-dom';
-import { Plus, Search, Calendar, Filter } from 'lucide-react';
+import { Plus, Search, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function EventsPage() {
-  const [events, setEvents] = useState<Event[]>([]);
+  const { data: events = [], isLoading } = useEvents();
+  const deleteEventMutation = useDeleteEvent();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
-  useEffect(() => {
-    setEvents(getEvents());
-  }, []);
-
   const handleDelete = (id: string) => {
     if (window.confirm('Är du säker på att du vill ta bort detta event?')) {
-      deleteEvent(id);
-      setEvents(getEvents());
-      toast.success('Event borttaget');
+      deleteEventMutation.mutate(id, {
+        onSuccess: () => toast.success('Event borttaget'),
+        onError: () => toast.error('Kunde inte ta bort event'),
+      });
     }
   };
 
@@ -94,7 +91,11 @@ export default function EventsPage() {
         </div>
 
         {/* Events Grid */}
-        {filteredEvents.length === 0 ? (
+        {isLoading ? (
+          <div className="text-center py-16 bg-card rounded-xl border animate-fade-in">
+            <p className="text-muted-foreground">Laddar event...</p>
+          </div>
+        ) : filteredEvents.length === 0 ? (
           <div className="text-center py-16 bg-card rounded-xl border animate-fade-in">
             <Calendar className="w-16 h-16 mx-auto text-muted-foreground/30 mb-4" />
             <h3 className="font-display text-xl font-semibold text-foreground mb-2">
