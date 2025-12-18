@@ -110,13 +110,29 @@
     @apply border-border;
   }
 
+  html {
+    /* Enable smooth scrolling */
+    scroll-behavior: smooth;
+    /* Safe area for iOS */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'DM Sans', sans-serif;
+    /* Prevent horizontal scroll on mobile */
+    overflow-x: hidden;
+    /* Better touch handling */
+    -webkit-tap-highlight-color: transparent;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', serif;
+  }
+
+  /* Better input styling on mobile */
+  input, textarea, select {
+    font-size: 16px; /* Prevents zoom on iOS */
   }
 }
 
@@ -155,6 +171,21 @@
 
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Safe area utilities for bottom navigation */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  /* Touch-friendly utility */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
   }
 }
 
