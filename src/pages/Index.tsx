@@ -71,15 +71,10 @@ export default function Index() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 justify-center animate-fade-in stagger-3">
-              <Link to="/dashboard" className="w-full sm:w-auto">
+              <Link to="/auth" className="w-full sm:w-auto">
                 <Button variant="hero" size="xl" className="w-full sm:w-auto">
-                  Kom igång
+                  Logga in som admin
                   <ArrowRight className="w-5 h-5" />
-                </Button>
-              </Link>
-              <Link to="/event/1" className="w-full sm:w-auto">
-                <Button variant="hero-outline" size="xl" className="w-full sm:w-auto">
-                  Se exempel
                 </Button>
               </Link>
             </div>
@@ -212,9 +207,9 @@ export default function Index() {
           <p className="text-primary-foreground/80 text-sm md:text-lg mb-8 md:mb-10 max-w-2xl mx-auto">
             Skapa ditt första event på några minuter och börja samla anmälningar direkt.
           </p>
-          <Link to="/dashboard">
+          <Link to="/auth">
             <Button variant="accent" size="xl" className="shadow-glow w-full sm:w-auto">
-              Gå till Dashboard
+              Logga in som admin
               <ArrowRight className="w-5 h-5" />
             </Button>
           </Link>
