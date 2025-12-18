@@ -1,15 +1,14 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { 
   Calendar, 
   LayoutDashboard, 
   Plus,
-  Settings,
-  Menu,
-  X
+  LogOut
 } from 'lucide-react';
-import { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from 'sonner';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -18,7 +17,17 @@ const navigation = [
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const { signOut, user } = useAuth();
+
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast.error('Kunde inte logga ut');
+    } else {
+      navigate('/');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background pb-20 lg:pb-0">
@@ -62,13 +71,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               </Link>
             );
           })}
-          <Link
-            to="/dashboard/settings"
+          <button
+            onClick={handleSignOut}
             className="flex flex-col items-center justify-center gap-1 flex-1 h-full text-muted-foreground"
           >
-            <Settings className="w-5 h-5" />
-            <span className="text-xs font-medium">Inställningar</span>
-          </Link>
+            <LogOut className="w-5 h-5" />
+            <span className="text-xs font-medium">Logga ut</span>
+          </button>
         </div>
       </nav>
 
@@ -119,15 +128,20 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </Link>
           </div>
 
-          {/* Settings */}
-          <div className="p-4 border-t border-border">
-            <Link
-              to="/dashboard/settings"
-              className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+          {/* User & Logout */}
+          <div className="p-4 border-t border-border space-y-2">
+            {user && (
+              <p className="text-xs text-muted-foreground truncate px-4">
+                {user.email}
+              </p>
+            )}
+            <button
+              onClick={handleSignOut}
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors w-full"
             >
-              <Settings className="w-5 h-5" />
-              Inställningar
-            </Link>
+              <LogOut className="w-5 h-5" />
+              Logga ut
+            </button>
           </div>
         </div>
       </aside>
