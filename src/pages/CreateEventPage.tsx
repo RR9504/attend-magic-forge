@@ -26,17 +26,17 @@ export default function CreateEventPage() {
 
   return (
     <DashboardLayout>
-      <div className="p-6 lg:p-8 max-w-4xl mx-auto space-y-6">
+      <div className="p-4 md:p-6 lg:p-8 max-w-4xl mx-auto space-y-4 md:space-y-6">
         {/* Header */}
-        <div className="flex items-center gap-4 animate-fade-in">
+        <div className="flex items-center gap-3 md:gap-4 animate-fade-in">
           <Link to="/dashboard/events">
-            <Button variant="ghost" size="icon">
-              <ArrowLeft className="w-5 h-5" />
+            <Button variant="ghost" size="icon" className="h-9 w-9 md:h-10 md:w-10">
+              <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
             </Button>
           </Link>
           <div>
-            <h1 className="font-display text-3xl font-bold text-foreground">Skapa nytt event</h1>
-            <p className="text-muted-foreground mt-1">Fyll i informationen nedan för att skapa ett nytt event</p>
+            <h1 className="font-display text-xl md:text-3xl font-bold text-foreground">Skapa nytt event</h1>
+            <p className="text-muted-foreground text-xs md:text-base mt-0.5 md:mt-1">Fyll i informationen nedan</p>
           </div>
         </div>
 

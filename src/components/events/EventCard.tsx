@@ -33,7 +33,7 @@ export function EventCard({ event, onDelete }: EventCardProps) {
   return (
     <Card className="overflow-hidden group hover:shadow-lg transition-all duration-300 animate-fade-in">
       {/* Event Image */}
-      <div className="relative h-48 bg-gradient-to-br from-primary/10 to-accent/10 overflow-hidden">
+      <div className="relative h-36 md:h-48 bg-gradient-to-br from-primary/10 to-accent/10 overflow-hidden">
         {event.imageUrl ? (
           <img
             src={event.imageUrl}
@@ -42,32 +42,32 @@ export function EventCard({ event, onDelete }: EventCardProps) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <Calendar className="w-16 h-16 text-primary/20" />
+            <Calendar className="w-12 h-12 md:w-16 md:h-16 text-primary/20" />
           </div>
         )}
-        <div className="absolute top-3 right-3">
+        <div className="absolute top-2 right-2 md:top-3 md:right-3">
           <Badge variant={statusBadge[event.status].variant}>
             {statusBadge[event.status].label}
           </Badge>
         </div>
       </div>
 
-      <CardContent className="p-5">
-        <h3 className="font-display text-xl font-semibold text-foreground line-clamp-2 mb-3">
+      <CardContent className="p-4 md:p-5">
+        <h3 className="font-display text-lg md:text-xl font-semibold text-foreground line-clamp-2 mb-2 md:mb-3">
           {event.title}
         </h3>
         
-        <div className="space-y-2 text-sm text-muted-foreground">
+        <div className="space-y-1.5 md:space-y-2 text-xs md:text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-accent" />
+            <Calendar className="w-3.5 h-3.5 md:w-4 md:h-4 text-accent flex-shrink-0" />
             <span>{formatDate(event.date)} kl. {event.time}</span>
           </div>
           <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-accent" />
+            <MapPin className="w-3.5 h-3.5 md:w-4 md:h-4 text-accent flex-shrink-0" />
             <span className="line-clamp-1">{event.location}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Users className="w-4 h-4 text-accent" />
+          <div className="flex items-center gap-2 flex-wrap">
+            <Users className="w-3.5 h-3.5 md:w-4 md:h-4 text-accent flex-shrink-0" />
             <span>
               {event.currentAttendees} / {event.maxAttendees} anmälda
             </span>
@@ -75,14 +75,14 @@ export function EventCard({ event, onDelete }: EventCardProps) {
               <Badge variant="destructive" className="ml-auto text-xs">Fullbokat</Badge>
             )}
             {isAlmostFull && !isFull && (
-              <Badge variant="warning" className="ml-auto text-xs">{spotsLeft} platser kvar</Badge>
+              <Badge variant="warning" className="ml-auto text-xs">{spotsLeft} kvar</Badge>
             )}
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="mt-4">
-          <div className="h-2 bg-secondary rounded-full overflow-hidden">
+        <div className="mt-3 md:mt-4">
+          <div className="h-1.5 md:h-2 bg-secondary rounded-full overflow-hidden">
             <div
               className={cn(
                 "h-full rounded-full transition-all duration-500",
@@ -94,24 +94,24 @@ export function EventCard({ event, onDelete }: EventCardProps) {
         </div>
       </CardContent>
 
-      <CardFooter className="px-5 pb-5 pt-0 gap-2">
+      <CardFooter className="px-4 pb-4 pt-0 md:px-5 md:pb-5 gap-2">
         <Link to={`/event/${event.id}`} className="flex-1">
-          <Button variant="outline" className="w-full" size="sm">
+          <Button variant="outline" className="w-full touch-target" size="sm">
             <Eye className="w-4 h-4" />
-            Visa
+            <span className="hidden sm:inline ml-1">Visa</span>
           </Button>
         </Link>
         <Link to={`/dashboard/events/${event.id}`} className="flex-1">
-          <Button variant="secondary" className="w-full" size="sm">
+          <Button variant="secondary" className="w-full touch-target" size="sm">
             <Edit className="w-4 h-4" />
-            Redigera
+            <span className="hidden sm:inline ml-1">Redigera</span>
           </Button>
         </Link>
         {onDelete && (
           <Button
             variant="ghost"
             size="icon"
-            className="text-muted-foreground hover:text-destructive"
+            className="text-muted-foreground hover:text-destructive touch-target"
             onClick={() => onDelete(event.id)}
           >
             <Trash2 className="w-4 h-4" />

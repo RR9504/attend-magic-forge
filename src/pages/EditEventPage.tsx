@@ -59,33 +59,33 @@ export default function EditEventPage() {
 
   return (
     <DashboardLayout>
-      <div className="p-6 lg:p-8 max-w-5xl mx-auto space-y-6">
+      <div className="p-4 md:p-6 lg:p-8 max-w-5xl mx-auto space-y-4 md:space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-fade-in">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between animate-fade-in">
+          <div className="flex items-center gap-3 md:gap-4">
             <Link to="/dashboard/events">
-              <Button variant="ghost" size="icon">
-                <ArrowLeft className="w-5 h-5" />
+              <Button variant="ghost" size="icon" className="h-9 w-9 md:h-10 md:w-10">
+                <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
               </Button>
             </Link>
-            <div>
-              <h1 className="font-display text-2xl font-bold text-foreground line-clamp-1">
+            <div className="min-w-0">
+              <h1 className="font-display text-lg md:text-2xl font-bold text-foreground line-clamp-1">
                 {event.title}
               </h1>
-              <p className="text-muted-foreground text-sm mt-1">
+              <p className="text-muted-foreground text-xs md:text-sm mt-0.5">
                 {event.currentAttendees} / {event.maxAttendees} anmälda
               </p>
             </div>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={copyPublicLink}>
+            <Button variant="outline" size="sm" onClick={copyPublicLink} className="flex-1 md:flex-none">
               <Copy className="w-4 h-4" />
-              Kopiera länk
+              <span className="ml-1">Kopiera länk</span>
             </Button>
-            <Link to={`/event/${id}`} target="_blank">
-              <Button variant="secondary">
+            <Link to={`/event/${id}`} target="_blank" className="flex-1 md:flex-none">
+              <Button variant="secondary" size="sm" className="w-full">
                 <ExternalLink className="w-4 h-4" />
-                Öppna bokningssida
+                <span className="ml-1">Öppna</span>
               </Button>
             </Link>
           </div>

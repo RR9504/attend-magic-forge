@@ -96,53 +96,53 @@ export function RegistrationList({ event, registrations }: RegistrationListProps
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-card rounded-lg border p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Users className="w-5 h-5 text-primary" />
+      <div className="grid grid-cols-3 gap-2 md:gap-4">
+        <div className="bg-card rounded-lg border p-3 md:p-4">
+          <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-3">
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Users className="w-4 h-4 md:w-5 md:h-5 text-primary" />
             </div>
             <div>
-              <p className="text-2xl font-semibold text-foreground">
+              <p className="text-lg md:text-2xl font-semibold text-foreground">
                 {event.currentAttendees}
               </p>
-              <p className="text-sm text-muted-foreground">Anmälda</p>
+              <p className="text-xs md:text-sm text-muted-foreground">Anmälda</p>
             </div>
           </div>
         </div>
-        <div className="bg-card rounded-lg border p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center">
-              <Users className="w-5 h-5 text-success" />
+        <div className="bg-card rounded-lg border p-3 md:p-4">
+          <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-3">
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-success/10 flex items-center justify-center">
+              <Users className="w-4 h-4 md:w-5 md:h-5 text-success" />
             </div>
             <div>
-              <p className="text-2xl font-semibold text-foreground">
+              <p className="text-lg md:text-2xl font-semibold text-foreground">
                 {event.maxAttendees - event.currentAttendees}
               </p>
-              <p className="text-sm text-muted-foreground">Platser kvar</p>
+              <p className="text-xs md:text-sm text-muted-foreground">Kvar</p>
             </div>
           </div>
         </div>
-        <div className="bg-card rounded-lg border p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
-              <Mail className="w-5 h-5 text-accent" />
+        <div className="bg-card rounded-lg border p-3 md:p-4">
+          <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-3">
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-accent/10 flex items-center justify-center">
+              <Mail className="w-4 h-4 md:w-5 md:h-5 text-accent" />
             </div>
             <div>
-              <p className="text-2xl font-semibold text-foreground">
+              <p className="text-lg md:text-2xl font-semibold text-foreground">
                 {registrations.filter((r) => r.data.email).length}
               </p>
-              <p className="text-sm text-muted-foreground">E-postadresser</p>
+              <p className="text-xs md:text-sm text-muted-foreground">E-post</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Actions */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <div className="relative flex-1 max-w-sm">
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder="Sök anmälningar..."
@@ -152,13 +152,13 @@ export function RegistrationList({ event, registrations }: RegistrationListProps
           />
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={handleExportEmails}>
+          <Button variant="outline" size="sm" onClick={handleExportEmails} className="flex-1 md:flex-none">
             <Mail className="w-4 h-4" />
-            Kopiera e-post
+            <span className="ml-1 hidden sm:inline">Kopiera</span> e-post
           </Button>
-          <Button variant="default" onClick={exportToCSV}>
+          <Button variant="default" size="sm" onClick={exportToCSV} className="flex-1 md:flex-none">
             <Download className="w-4 h-4" />
-            Exportera CSV
+            <span className="ml-1">CSV</span>
           </Button>
         </div>
       </div>

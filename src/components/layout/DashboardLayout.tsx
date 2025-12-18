@@ -21,26 +21,59 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Mobile menu button */}
-      <div className="lg:hidden fixed top-4 left-4 z-50">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="bg-card"
-        >
-          {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </Button>
-      </div>
+    <div className="min-h-screen bg-background pb-20 lg:pb-0">
+      {/* Mobile Header */}
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-sm border-b border-border">
+        <div className="flex items-center justify-between px-4 h-14">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+              <Calendar className="w-4 h-4 text-primary-foreground" />
+            </div>
+            <span className="font-display font-semibold text-foreground">EventFlow</span>
+          </div>
+          <Link to="/dashboard/events/new">
+            <Button variant="accent" size="sm">
+              <Plus className="w-4 h-4" />
+              <span className="sr-only sm:not-sr-only sm:ml-1">Nytt event</span>
+            </Button>
+          </Link>
+        </div>
+      </header>
 
-      {/* Sidebar */}
-      <aside
-        className={cn(
-          "fixed inset-y-0 left-0 z-40 w-64 bg-card border-r border-border transform transition-transform duration-200 ease-in-out lg:translate-x-0",
-          mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-        )}
-      >
+      {/* Mobile Bottom Navigation */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-sm border-t border-border safe-area-bottom">
+        <div className="flex items-center justify-around h-16">
+          {navigation.map((item) => {
+            const isActive = location.pathname === item.href || 
+              (item.href !== '/dashboard' && location.pathname.startsWith(item.href));
+            return (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={cn(
+                  "flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors",
+                  isActive
+                    ? "text-primary"
+                    : "text-muted-foreground"
+                )}
+              >
+                <item.icon className="w-5 h-5" />
+                <span className="text-xs font-medium">{item.name}</span>
+              </Link>
+            );
+          })}
+          <Link
+            to="/dashboard/settings"
+            className="flex flex-col items-center justify-center gap-1 flex-1 h-full text-muted-foreground"
+          >
+            <Settings className="w-5 h-5" />
+            <span className="text-xs font-medium">Inställningar</span>
+          </Link>
+        </div>
+      </nav>
+
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:block fixed inset-y-0 left-0 z-40 w-64 bg-card border-r border-border">
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center gap-3 px-6 py-6 border-b border-border">
@@ -62,7 +95,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 <Link
                   key={item.name}
                   to={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors",
                     isActive
@@ -79,7 +111,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
           {/* Create Event Button */}
           <div className="p-4 border-t border-border">
-            <Link to="/dashboard/events/new" onClick={() => setMobileMenuOpen(false)}>
+            <Link to="/dashboard/events/new">
               <Button className="w-full" variant="accent">
                 <Plus className="w-4 h-4" />
                 Skapa nytt event
@@ -91,7 +123,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           <div className="p-4 border-t border-border">
             <Link
               to="/dashboard/settings"
-              onClick={() => setMobileMenuOpen(false)}
               className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
             >
               <Settings className="w-5 h-5" />
@@ -101,16 +132,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
 
-      {/* Mobile overlay */}
-      {mobileMenuOpen && (
-        <div
-          className="fixed inset-0 bg-foreground/20 backdrop-blur-sm z-30 lg:hidden"
-          onClick={() => setMobileMenuOpen(false)}
-        />
-      )}
-
       {/* Main content */}
-      <main className="lg:pl-64">
+      <main className="lg:pl-64 pt-14 lg:pt-0">
         <div className="min-h-screen">
           {children}
         </div>

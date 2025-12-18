@@ -56,28 +56,28 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="p-6 lg:p-8 space-y-8">
+      <div className="p-4 md:p-6 lg:p-8 space-y-6 md:space-y-8">
         {/* Header */}
         <div className="animate-fade-in">
-          <h1 className="font-display text-3xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground mt-1">Översikt över dina event och anmälningar</p>
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-muted-foreground text-sm md:text-base mt-1">Översikt över dina event och anmälningar</p>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {stats.map((stat, index) => (
             <div
               key={stat.label}
-              className="bg-card rounded-xl border p-5 animate-fade-in"
+              className="bg-card rounded-lg md:rounded-xl border p-3 md:p-5 animate-fade-in"
               style={{ animationDelay: `${(index + 1) * 100}ms` }}
             >
-              <div className="flex items-center gap-4">
-                <div className={`w-12 h-12 rounded-xl ${stat.bg} flex items-center justify-center`}>
-                  <stat.icon className={`w-6 h-6 ${stat.color}`} />
+              <div className="flex items-center gap-2 md:gap-4">
+                <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl ${stat.bg} flex items-center justify-center flex-shrink-0`}>
+                  <stat.icon className={`w-5 h-5 md:w-6 md:h-6 ${stat.color}`} />
                 </div>
-                <div>
-                  <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                <div className="min-w-0">
+                  <p className="text-lg md:text-2xl font-bold text-foreground truncate">{stat.value}</p>
+                  <p className="text-xs md:text-sm text-muted-foreground truncate">{stat.label}</p>
                 </div>
               </div>
             </div>
