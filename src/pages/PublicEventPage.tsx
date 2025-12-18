@@ -1,7 +1,7 @@
-import { getEvent, addRegistration } from '@/lib/eventStore';
+import { useEvent } from '@/hooks/useEvents';
+import { useCreateRegistration } from '@/hooks/useRegistrations';
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Event } from '@/types/event';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,51 +15,37 @@ import { cn } from '@/lib/utils';
 
 export default function PublicEventPage() {
   const { id } = useParams<{ id: string }>();
-  const [event, setEvent] = useState<Event | null>(null);
+  const { data: event, isLoading, error } = useEvent(id || '');
+  const createRegistrationMutation = useCreateRegistration();
   const [formData, setFormData] = useState<Record<string, string | boolean>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    if (id) {
-      const eventData = getEvent(id);
-      if (eventData) {
-        setEvent(eventData);
-        // Initialize form data
-        const initialData: Record<string, string | boolean> = {};
-        eventData.formFields.forEach(field => {
-          initialData[field.name] = field.type === 'checkbox' ? false : '';
-        });
-        setFormData(initialData);
-      } else {
-        setNotFound(true);
-      }
+    if (event) {
+      const initialData: Record<string, string | boolean> = {};
+      event.formFields.forEach(field => {
+        initialData[field.name] = field.type === 'checkbox' ? false : '';
+      });
+      setFormData(initialData);
     }
-  }, [id]);
+  }, [event]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!event || !id) return;
 
-    setIsSubmitting(true);
-
-    // Simulate a small delay for UX
-    setTimeout(() => {
-      const registration = addRegistration(id, formData);
-      
-      if (registration) {
-        setIsSubmitted(true);
-        // Refresh event data to get updated count
-        const updatedEvent = getEvent(id);
-        if (updatedEvent) setEvent(updatedEvent);
-        toast.success('Anmälan skickad!');
-      } else {
-        toast.error('Eventet är fullt eller stängt för anmälan');
+    createRegistrationMutation.mutate(
+      { eventId: id, data: formData },
+      {
+        onSuccess: () => {
+          setIsSubmitted(true);
+          toast.success('Anmälan skickad!');
+        },
+        onError: () => {
+          toast.error('Eventet är fullt eller stängt för anmälan');
+        },
       }
-      
-      setIsSubmitting(false);
-    }, 500);
+    );
   };
 
   const updateFormData = (name: string, value: string | boolean) => {
@@ -75,7 +61,7 @@ export default function PublicEventPage() {
     });
   };
 
-  if (notFound) {
+  if (error) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="text-center animate-fade-in">
@@ -97,7 +83,7 @@ export default function PublicEventPage() {
     );
   }
 
-  if (!event) {
+  if (isLoading || !event) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-pulse text-muted-foreground">Laddar...</div>
@@ -288,9 +274,9 @@ export default function PublicEventPage() {
                   variant="accent"
                   size="lg"
                   className="w-full"
-                  disabled={isSubmitting}
+                  disabled={createRegistrationMutation.isPending}
                 >
-                  {isSubmitting ? 'Skickar...' : 'Skicka anmälan'}
+                  {createRegistrationMutation.isPending ? 'Skickar...' : 'Skicka anmälan'}
                 </Button>
               </form>
             </CardContent>

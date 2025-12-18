@@ -1,23 +1,19 @@
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { EventCard } from '@/components/events/EventCard';
-import { getEvents, deleteEvent } from '@/lib/eventStore';
-import { useState, useEffect } from 'react';
-import { Event } from '@/types/event';
+import { useEvents, useDeleteEvent } from '@/hooks/useEvents';
 import { Calendar, Users, TrendingUp, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Dashboard() {
-  const [events, setEvents] = useState<Event[]>([]);
-
-  useEffect(() => {
-    setEvents(getEvents());
-  }, []);
+  const { data: events = [], isLoading } = useEvents();
+  const deleteEventMutation = useDeleteEvent();
 
   const handleDelete = (id: string) => {
     if (window.confirm('Är du säker på att du vill ta bort detta event?')) {
-      deleteEvent(id);
-      setEvents(getEvents());
-      toast.success('Event borttaget');
+      deleteEventMutation.mutate(id, {
+        onSuccess: () => toast.success('Event borttaget'),
+        onError: () => toast.error('Kunde inte ta bort event'),
+      });
     }
   };
 
@@ -94,7 +90,11 @@ export default function Dashboard() {
             Senaste event
           </h2>
           
-          {events.length === 0 ? (
+          {isLoading ? (
+            <div className="text-center py-16 bg-card rounded-xl border animate-fade-in">
+              <p className="text-muted-foreground">Laddar event...</p>
+            </div>
+          ) : events.length === 0 ? (
             <div className="text-center py-16 bg-card rounded-xl border animate-fade-in">
               <Calendar className="w-16 h-16 mx-auto text-muted-foreground/30 mb-4" />
               <h3 className="font-display text-xl font-semibold text-foreground mb-2">

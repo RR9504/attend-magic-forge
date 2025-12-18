@@ -14,7 +14,80 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      events: {
+        Row: {
+          created_at: string
+          current_attendees: number
+          date: string
+          description: string | null
+          form_fields: Json
+          id: string
+          image_url: string | null
+          location: string
+          max_attendees: number
+          status: string
+          time: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          current_attendees?: number
+          date: string
+          description?: string | null
+          form_fields?: Json
+          id?: string
+          image_url?: string | null
+          location: string
+          max_attendees?: number
+          status?: string
+          time: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          current_attendees?: number
+          date?: string
+          description?: string | null
+          form_fields?: Json
+          id?: string
+          image_url?: string | null
+          location?: string
+          max_attendees?: number
+          status?: string
+          time?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      registrations: {
+        Row: {
+          data: Json
+          event_id: string
+          id: string
+          registered_at: string
+        }
+        Insert: {
+          data?: Json
+          event_id: string
+          id?: string
+          registered_at?: string
+        }
+        Update: {
+          data?: Json
+          event_id?: string
+          id?: string
+          registered_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
