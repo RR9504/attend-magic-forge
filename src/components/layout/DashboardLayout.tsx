@@ -41,7 +41,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <span className="font-display font-semibold text-foreground">EventFlow</span>
           </div>
           <Link to="/dashboard/events/new">
-            <Button variant="accent" size="sm">
+            <Button variant="default" size="sm">
               <Plus className="w-4 h-4" />
               <span className="sr-only sm:not-sr-only sm:ml-1">Nytt event</span>
             </Button>
@@ -121,7 +121,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           {/* Create Event Button */}
           <div className="p-4 border-t border-border">
             <Link to="/dashboard/events/new">
-              <Button className="w-full" variant="accent">
+              <Button className="w-full" variant="default">
                 <Plus className="w-4 h-4" />
                 Skapa nytt event
               </Button>
