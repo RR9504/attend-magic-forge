@@ -5,9 +5,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { useState } from 'react';
-import { Plus, Trash2, GripVertical, Save, Image as ImageIcon } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { Plus, Trash2, GripVertical, Save, Image as ImageIcon, Upload, X, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface EventFormProps {
   initialData?: Partial<Event>;
@@ -27,6 +29,57 @@ export function EventForm({ initialData, onSubmit, isLoading }: EventFormProps) 
   const [formFields, setFormFields] = useState<EventFormField[]>(
     initialData?.formFields || DEFAULT_FORM_FIELDS
   );
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Endast bildfiler är tillåtna');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Bilden får max vara 5MB');
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `events/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('event-images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('event-images')
+        .getPublicUrl(filePath);
+
+      setImageUrl(publicUrl);
+      toast.success('Bilden har laddats upp');
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Kunde inte ladda upp bilden');
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const clearImage = () => {
+    setImageUrl('');
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -150,8 +203,51 @@ export function EventForm({ initialData, onSubmit, isLoading }: EventFormProps) 
           <CardTitle className="font-display">Eventbild</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Upload button */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="hidden"
+              id="image-upload"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploading}
+              className="flex-1 sm:flex-none"
+            >
+              {isUploading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Laddar upp...
+                </>
+              ) : (
+                <>
+                  <Upload className="w-4 h-4" />
+                  Ladda upp bild
+                </>
+              )}
+            </Button>
+            {imageUrl && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={clearImage}
+                className="text-muted-foreground hover:text-destructive"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
+
+          {/* Or use URL */}
           <div className="space-y-2">
-            <Label htmlFor="imageUrl">Bild-URL</Label>
+            <Label htmlFor="imageUrl" className="text-sm text-muted-foreground">Eller ange bild-URL</Label>
             <Input
               id="imageUrl"
               value={imageUrl}
