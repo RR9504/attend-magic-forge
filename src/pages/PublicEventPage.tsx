@@ -26,6 +26,8 @@ export default function PublicEventPage() {
   const [formData, setFormData] = useState<Record<string, string | boolean>>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
+  const [privacyError, setPrivacyError] = useState(false);
 
   useEffect(() => {
     if (event) {
@@ -94,6 +96,12 @@ export default function PublicEventPage() {
 
     if (!validateForm()) {
       toast.error('Vänligen korrigera felen i formuläret');
+      return;
+    }
+
+    if (!acceptedPrivacy) {
+      setPrivacyError(true);
+      toast.error('Du måste godkänna behandlingen av personuppgifter');
       return;
     }
 
@@ -373,6 +381,39 @@ export default function PublicEventPage() {
                     )}
                   </div>
                 ))}
+
+                {/* Privacy Policy Checkbox */}
+                <div className="space-y-1 pt-2 border-t border-border">
+                  <div className="flex items-start gap-3">
+                    <Checkbox
+                      id="privacy-policy"
+                      checked={acceptedPrivacy}
+                      onCheckedChange={(checked) => {
+                        setAcceptedPrivacy(!!checked);
+                        if (checked) setPrivacyError(false);
+                      }}
+                      className="mt-0.5"
+                    />
+                    <Label htmlFor="privacy-policy" className="cursor-pointer text-sm leading-relaxed">
+                      Jag godkänner att mina personuppgifter behandlas enligt{' '}
+                      <a
+                        href="https://www.smsparbank.se/bedrageri-och-sakerhet/banksekretess-och-integritet/behandling-av-personuppgifter.html"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary underline hover:text-primary/80"
+                      >
+                        Sölvesborg Mjällby Sparbanks integritetspolicy
+                      </a>
+                      <span className="text-destructive ml-1">*</span>
+                    </Label>
+                  </div>
+                  {privacyError && (
+                    <div className="flex items-center gap-1 text-destructive text-sm ml-6">
+                      <AlertCircle className="w-3 h-3" />
+                      Du måste godkänna behandlingen av personuppgifter
+                    </div>
+                  )}
+                </div>
 
                 <Button
                   type="submit"
