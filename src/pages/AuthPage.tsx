@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, Loader2, Mail, Lock, AlertCircle } from 'lucide-react';
-import { toast } from 'sonner';
 import { z } from 'zod';
 
 const authSchema = z.object({
@@ -16,8 +15,7 @@ const authSchema = z.object({
 
 export default function AuthPage() {
   const navigate = useNavigate();
-  const { user, isAdmin, loading, signIn, signUp } = useAuth();
-  const [isSignUp, setIsSignUp] = useState(false);
+  const { user, isAdmin, loading, signIn } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,7 +31,6 @@ export default function AuthPage() {
     e.preventDefault();
     setError(null);
 
-    // Validate input
     const validation = authSchema.safeParse({ email, password });
     if (!validation.success) {
       setError(validation.error.errors[0].message);
@@ -43,26 +40,12 @@ export default function AuthPage() {
     setIsSubmitting(true);
 
     try {
-      if (isSignUp) {
-        const { error } = await signUp(email, password);
-        if (error) {
-          if (error.message.includes('already registered')) {
-            setError('E-postadressen är redan registrerad. Försök logga in istället.');
-          } else {
-            setError(error.message);
-          }
+      const { error } = await signIn(email, password);
+      if (error) {
+        if (error.message.includes('Invalid login')) {
+          setError('Fel e-postadress eller lösenord.');
         } else {
-          toast.success('Konto skapat! Kontakta en administratör för att få adminbehörighet.');
-          setIsSignUp(false);
-        }
-      } else {
-        const { error } = await signIn(email, password);
-        if (error) {
-          if (error.message.includes('Invalid login')) {
-            setError('Fel e-postadress eller lösenord.');
-          } else {
-            setError(error.message);
-          }
+          setError(error.message);
         }
       }
     } catch (err) {
@@ -116,13 +99,9 @@ export default function AuthPage() {
           <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center mx-auto mb-4">
             <Calendar className="w-6 h-6 text-primary-foreground" />
           </div>
-          <CardTitle className="text-xl">
-            {isSignUp ? 'Skapa konto' : 'Logga in'}
-          </CardTitle>
+          <CardTitle className="text-xl">Logga in</CardTitle>
           <CardDescription>
-            {isSignUp 
-              ? 'Skapa ett konto för att hantera event' 
-              : 'Logga in för att hantera event via dashboarden'}
+            Logga in för att hantera event via dashboarden
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -171,27 +150,12 @@ export default function AuthPage() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  {isSignUp ? 'Skapar konto...' : 'Loggar in...'}
+                  Loggar in...
                 </>
               ) : (
-                isSignUp ? 'Skapa konto' : 'Logga in'
+                'Logga in'
               )}
             </Button>
-
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsSignUp(!isSignUp);
-                  setError(null);
-                }}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {isSignUp 
-                  ? 'Har du redan ett konto? Logga in' 
-                  : 'Inget konto? Skapa ett'}
-              </button>
-            </div>
           </form>
         </CardContent>
       </Card>

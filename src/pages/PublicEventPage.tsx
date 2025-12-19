@@ -9,15 +9,22 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, MapPin, Users, Clock, CheckCircle2, XCircle, ArrowLeft } from 'lucide-react';
+import { Calendar, MapPin, Users, Clock, CheckCircle2, XCircle, ArrowLeft, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { z } from 'zod';
+
+// Validation schemas
+const emailSchema = z.string().trim().email('Ogiltig e-postadress').max(255, 'E-postadressen är för lång');
+const textSchema = z.string().trim().max(500, 'Texten är för lång (max 500 tecken)');
+const textareaSchema = z.string().trim().max(2000, 'Texten är för lång (max 2000 tecken)');
 
 export default function PublicEventPage() {
   const { id } = useParams<{ id: string }>();
   const { data: event, isLoading, error } = useEvent(id || '');
   const createRegistrationMutation = useCreateRegistration();
   const [formData, setFormData] = useState<Record<string, string | boolean>>({});
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
@@ -30,12 +37,78 @@ export default function PublicEventPage() {
     }
   }, [event]);
 
+  const validateField = (field: { name: string; type: string; required?: boolean }, value: string | boolean): string | null => {
+    if (field.required && (value === '' || value === false)) {
+      return 'Detta fält är obligatoriskt';
+    }
+
+    if (typeof value === 'string' && value.trim() !== '') {
+      // Validate email fields
+      if (field.type === 'email' || field.name.toLowerCase().includes('email') || field.name.toLowerCase().includes('e-post')) {
+        const result = emailSchema.safeParse(value);
+        if (!result.success) {
+          return result.error.errors[0].message;
+        }
+      }
+      // Validate textarea fields
+      else if (field.type === 'textarea') {
+        const result = textareaSchema.safeParse(value);
+        if (!result.success) {
+          return result.error.errors[0].message;
+        }
+      }
+      // Validate regular text fields
+      else if (field.type === 'text') {
+        const result = textSchema.safeParse(value);
+        if (!result.success) {
+          return result.error.errors[0].message;
+        }
+      }
+    }
+
+    return null;
+  };
+
+  const validateForm = (): boolean => {
+    if (!event) return false;
+
+    const errors: Record<string, string> = {};
+    let isValid = true;
+
+    event.formFields.forEach(field => {
+      const value = formData[field.name];
+      const error = validateField(field, value);
+      if (error) {
+        errors[field.name] = error;
+        isValid = false;
+      }
+    });
+
+    setFormErrors(errors);
+    return isValid;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!event || !id) return;
 
+    if (!validateForm()) {
+      toast.error('Vänligen korrigera felen i formuläret');
+      return;
+    }
+
+    // Sanitize form data before submission
+    const sanitizedData: Record<string, string | boolean> = {};
+    Object.entries(formData).forEach(([key, value]) => {
+      if (typeof value === 'string') {
+        sanitizedData[key] = value.trim();
+      } else {
+        sanitizedData[key] = value;
+      }
+    });
+
     createRegistrationMutation.mutate(
-      { eventId: id, data: formData },
+      { eventId: id, data: sanitizedData },
       {
         onSuccess: () => {
           setIsSubmitted(true);
@@ -50,6 +123,14 @@ export default function PublicEventPage() {
 
   const updateFormData = (name: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear error when user starts typing
+    if (formErrors[name]) {
+      setFormErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
   };
 
   const formatDate = (date: string) => {
@@ -224,16 +305,24 @@ export default function PublicEventPage() {
                     style={{ animationDelay: `${index * 50}ms` }}
                   >
                     {field.type === 'checkbox' ? (
-                      <div className="flex items-center gap-3">
-                        <Checkbox
-                          id={field.id}
-                          checked={formData[field.name] as boolean}
-                          onCheckedChange={(checked) => updateFormData(field.name, !!checked)}
-                        />
-                        <Label htmlFor={field.id} className="cursor-pointer">
-                          {field.label}
-                          {field.required && <span className="text-destructive ml-1">*</span>}
-                        </Label>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-3">
+                          <Checkbox
+                            id={field.id}
+                            checked={formData[field.name] as boolean}
+                            onCheckedChange={(checked) => updateFormData(field.name, !!checked)}
+                          />
+                          <Label htmlFor={field.id} className="cursor-pointer">
+                            {field.label}
+                            {field.required && <span className="text-destructive ml-1">*</span>}
+                          </Label>
+                        </div>
+                        {formErrors[field.name] && (
+                          <div className="flex items-center gap-1 text-destructive text-sm">
+                            <AlertCircle className="w-3 h-3" />
+                            {formErrors[field.name]}
+                          </div>
+                        )}
                       </div>
                     ) : field.type === 'textarea' ? (
                       <div className="space-y-2">
@@ -248,7 +337,15 @@ export default function PublicEventPage() {
                           placeholder={field.placeholder}
                           required={field.required}
                           rows={4}
+                          maxLength={2000}
+                          className={cn(formErrors[field.name] && "border-destructive")}
                         />
+                        {formErrors[field.name] && (
+                          <div className="flex items-center gap-1 text-destructive text-sm">
+                            <AlertCircle className="w-3 h-3" />
+                            {formErrors[field.name]}
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <div className="space-y-2">
@@ -263,7 +360,15 @@ export default function PublicEventPage() {
                           onChange={(e) => updateFormData(field.name, e.target.value)}
                           placeholder={field.placeholder}
                           required={field.required}
+                          maxLength={field.type === 'email' ? 255 : 500}
+                          className={cn(formErrors[field.name] && "border-destructive")}
                         />
+                        {formErrors[field.name] && (
+                          <div className="flex items-center gap-1 text-destructive text-sm">
+                            <AlertCircle className="w-3 h-3" />
+                            {formErrors[field.name]}
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
