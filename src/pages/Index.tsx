@@ -158,7 +158,7 @@ export default function Index() {
                     <Calendar className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-foreground text-sm md:text-base">EventFlow</h4>
+                    <h4 className="font-semibold text-foreground text-sm md:text-base">SM Sparbank- Event</h4>
                     <p className="text-xs text-muted-foreground">Eventhantering</p>
                   </div>
                 </div>
@@ -219,7 +219,7 @@ export default function Index() {
       {/* Footer */}
       <footer className="py-6 md:py-8 border-t border-border">
         <div className="container mx-auto px-4 text-center text-muted-foreground text-xs md:text-sm">
-          <p>© 2025 EventFlow. Byggd med kärlek för moderna organisationer.</p>
+          <p>© 2025 SM Sparbank. Alla rättigheter förbehållna.</p>
         </div>
       </footer>
     </div>

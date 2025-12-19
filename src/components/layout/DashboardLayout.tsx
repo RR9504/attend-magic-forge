@@ -38,7 +38,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <Calendar className="w-4 h-4 text-primary-foreground" />
             </div>
-            <span className="font-display font-semibold text-foreground">EventFlow</span>
+            <span className="font-display font-semibold text-foreground">SM Sparbank- Event</span>
           </div>
           <Link to="/dashboard/events/new">
             <Button variant="default" size="sm">
@@ -90,7 +90,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               <Calendar className="w-5 h-5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="font-display text-lg font-semibold text-foreground">EventFlow</h1>
+              <h1 className="font-display text-lg font-semibold text-foreground">SM Sparbank- Event</h1>
               <p className="text-xs text-muted-foreground">Eventhantering</p>
             </div>
           </div>
