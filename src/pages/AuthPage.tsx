@@ -77,15 +77,9 @@ export default function AuthPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button 
-              variant="outline" 
-              className="w-full"
-              onClick={() => {
-                navigate('/');
-              }}
-            >
-              Gå till startsidan
-            </Button>
+            <p className="text-sm text-muted-foreground">
+              Kontakta administratören för att få tillgång.
+            </p>
           </CardContent>
         </Card>
       </div>
