@@ -59,10 +59,6 @@ export default {
           DEFAULT: "hsl(var(--warning))",
           foreground: "hsl(var(--warning-foreground))",
         },
-        brown: {
-          DEFAULT: "hsl(var(--brown))",
-          foreground: "hsl(var(--brown-foreground))",
-        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
