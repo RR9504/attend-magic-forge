@@ -145,6 +145,8 @@
     scroll-behavior: smooth;
     /* Safe area for iOS */
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    /* Prevent horizontal scroll */
+    overflow-x: hidden;
   }
 
   body {
@@ -152,8 +154,18 @@
     font-family: 'Roboto', sans-serif;
     /* Prevent horizontal scroll on mobile */
     overflow-x: hidden;
+    /* Lock to viewport width */
+    width: 100%;
+    max-width: 100vw;
     /* Better touch handling */
     -webkit-tap-highlight-color: transparent;
+  }
+
+  #root {
+    /* Prevent horizontal scroll */
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
   }
 
   h1, h2, h3, h4, h5, h6 {
