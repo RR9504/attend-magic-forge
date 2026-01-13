@@ -4,7 +4,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
-import EventsPage from "./pages/EventsPage";
 import CreateEventPage from "./pages/CreateEventPage";
 import EditEventPage from "./pages/EditEventPage";
 import PublicEventPage from "./pages/PublicEventPage";
@@ -24,7 +23,7 @@ const App = () => (
           <Route path="/" element={<AuthPage />} />
           <Route path="/auth" element={<Navigate to="/" replace />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/dashboard/events" element={<ProtectedRoute><EventsPage /></ProtectedRoute>} />
+          <Route path="/dashboard/events" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard/events/new" element={<ProtectedRoute><CreateEventPage /></ProtectedRoute>} />
           <Route path="/dashboard/events/:id" element={<ProtectedRoute><EditEventPage /></ProtectedRoute>} />
           <Route path="/event/:id" element={<PublicEventPage />} />
