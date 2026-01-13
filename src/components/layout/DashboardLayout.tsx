@@ -12,7 +12,6 @@ import { toast } from 'sonner';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Event', href: '/dashboard/events', icon: Calendar },
 ];
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
