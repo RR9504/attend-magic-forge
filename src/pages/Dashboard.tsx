@@ -43,15 +43,6 @@ export default function Dashboard() {
       color: 'text-success',
       bg: 'bg-success/10',
     },
-    {
-      label: 'Fyllnadsgrad',
-      value: events.length > 0 
-        ? `${Math.round((totalAttendees / events.reduce((sum, e) => sum + e.maxAttendees, 0)) * 100)}%`
-        : '0%',
-      icon: TrendingUp,
-      color: 'text-warning',
-      bg: 'bg-warning/10',
-    },
   ];
 
   return (
