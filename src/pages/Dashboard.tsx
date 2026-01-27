@@ -68,7 +68,7 @@ export default function Dashboard() {
             <p className="text-muted-foreground text-sm md:text-base mt-1">Översikt över dina event och anmälningar</p>
           </div>
           <Link to="/dashboard/events/new" className="hidden sm:block">
-            <Button variant="accent" size="lg">
+            <Button variant="default" size="lg">
               <Plus className="w-5 h-5" />
               Skapa nytt event
             </Button>
@@ -168,7 +168,7 @@ export default function Dashboard() {
               </p>
               {!searchQuery && statusFilter === 'all' && (
                 <Link to="/dashboard/events/new">
-                  <Button variant="accent">
+                  <Button variant="default">
                     <Plus className="w-4 h-4" />
                     Skapa event
                   </Button>
