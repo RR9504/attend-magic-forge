@@ -40,7 +40,7 @@
     --popover-foreground: 210 60% 15%;
 
     /* Deep navy blue - primary brand color */
-    --primary: 210 65% 25%;
+    --primary: 211 42% 32%;
     --primary-foreground: 0 0% 100%;
 
     /* Lighter blue - secondary */
@@ -60,7 +60,7 @@
 
     --border: 210 25% 88%;
     --input: 210 25% 88%;
-    --ring: 210 65% 25%;
+    --ring: 211 42% 32%;
 
     --radius: 0.5rem;
 
@@ -71,7 +71,7 @@
     --warning-foreground: 0 0% 100%;
 
     /* Blue gradients with fading */
-    --gradient-primary: linear-gradient(135deg, hsl(210 65% 25%) 0%, hsl(210 55% 40%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(211 42% 32%) 0%, hsl(211 38% 42%) 100%);
     --gradient-accent: linear-gradient(135deg, hsl(210 85% 45%) 0%, hsl(210 75% 55%) 100%);
     --gradient-hero: linear-gradient(180deg, hsl(210 25% 97%) 0%, hsl(210 30% 94%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 20% 98%) 100%);
@@ -85,11 +85,11 @@
     --shadow-xl: 0 20px 25px -5px hsl(210 60% 20% / 0.1), 0 8px 10px -6px hsl(210 60% 20% / 0.05);
     --shadow-glow: 0 0 40px hsl(210 85% 45% / 0.2);
 
-    --sidebar-background: 210 65% 25%;
+    --sidebar-background: 211 42% 32%;
     --sidebar-foreground: 0 0% 100%;
     --sidebar-primary: 210 85% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 55% 30%;
+    --sidebar-accent: 211 38% 36%;
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 210 50% 35%;
     --sidebar-ring: 210 85% 55%;
