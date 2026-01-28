@@ -17,6 +17,11 @@ export interface EventFormField {
   conditionalField?: ConditionalField;
 }
 
+export interface ImagePosition {
+  x: number;
+  y: number;
+}
+
 export interface Event {
   id: string;
   title: string;
@@ -25,6 +30,7 @@ export interface Event {
   time: string;
   location: string;
   imageUrl: string;
+  imagePosition?: ImagePosition;
   maxAttendees: number;
   currentAttendees: number;
   status: 'draft' | 'published' | 'closed';
