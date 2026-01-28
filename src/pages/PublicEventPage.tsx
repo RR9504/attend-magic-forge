@@ -482,7 +482,6 @@ export default function PublicEventPage() {
 
                 <Button
                   type="submit"
-                  variant="accent"
                   size="lg"
                   className="w-full"
                   disabled={createRegistrationMutation.isPending}
