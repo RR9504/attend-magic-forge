@@ -33,6 +33,7 @@ export function EventForm({ initialData, onSubmit, isLoading }: EventFormProps) 
   const [formFields, setFormFields] = useState<EventFormField[]>(
     initialData?.formFields || DEFAULT_FORM_FIELDS
   );
+  const [showBookedSeats, setShowBookedSeats] = useState(initialData?.showBookedSeats ?? true);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -98,6 +99,7 @@ export function EventForm({ initialData, onSubmit, isLoading }: EventFormProps) 
       maxAttendees,
       status,
       formFields,
+      showBookedSeats,
     });
   };
 
@@ -443,33 +445,50 @@ export function EventForm({ initialData, onSubmit, isLoading }: EventFormProps) 
         </CardContent>
       </Card>
 
-      {/* Status & Submit */}
+      {/* Settings & Status */}
       <Card>
-        <CardContent className="pt-4 md:pt-6">
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-              <Label className="text-sm">Status:</Label>
-              <div className="flex gap-2 flex-wrap">
-                {(['draft', 'published', 'closed'] as const).map((s) => (
-                  <Button
-                    key={s}
-                    type="button"
-                    variant={status === s ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setStatus(s)}
-                    className="flex-1 sm:flex-none"
-                  >
-                    {s === 'draft' ? 'Utkast' : s === 'published' ? 'Publicera' : 'Stängd'}
-                  </Button>
-                ))}
-              </div>
+        <CardHeader>
+          <CardTitle className="font-display">Inställningar</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Show booked seats toggle */}
+          <div className="flex items-center justify-between p-4 rounded-lg border bg-muted/30">
+            <div className="space-y-0.5">
+              <Label htmlFor="showBookedSeats" className="font-medium">Visa antal bokade platser</Label>
+              <p className="text-sm text-muted-foreground">
+                Visa för kunder hur många platser som är bokade
+              </p>
             </div>
-            
-            <Button type="submit" variant="accent" size="lg" disabled={isLoading} className="w-full sm:w-auto sm:ml-auto">
-              <Save className="w-4 h-4" />
-              {isLoading ? 'Sparar...' : 'Spara event'}
-            </Button>
+            <Switch
+              id="showBookedSeats"
+              checked={showBookedSeats}
+              onCheckedChange={setShowBookedSeats}
+            />
           </div>
+
+          {/* Status */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <Label className="text-sm">Status:</Label>
+            <div className="flex gap-2 flex-wrap">
+              {(['draft', 'published', 'closed'] as const).map((s) => (
+                <Button
+                  key={s}
+                  type="button"
+                  variant={status === s ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setStatus(s)}
+                  className="flex-1 sm:flex-none"
+                >
+                  {s === 'draft' ? 'Utkast' : s === 'published' ? 'Publicera' : 'Stängd'}
+                </Button>
+              ))}
+            </div>
+          </div>
+            
+          <Button type="submit" variant="accent" size="lg" disabled={isLoading} className="w-full sm:w-auto sm:ml-auto">
+            <Save className="w-4 h-4" />
+            {isLoading ? 'Sparar...' : 'Spara event'}
+          </Button>
         </CardContent>
       </Card>
     </form>

@@ -22,6 +22,7 @@ const SAMPLE_EVENTS: Event[] = [
     currentAttendees: 32,
     status: 'published',
     formFields: DEFAULT_FORM_FIELDS,
+    showBookedSeats: true,
     createdAt: '2024-12-01T10:00:00Z',
   },
   {
@@ -36,6 +37,7 @@ const SAMPLE_EVENTS: Event[] = [
     currentAttendees: 28,
     status: 'published',
     formFields: DEFAULT_FORM_FIELDS,
+    showBookedSeats: true,
     createdAt: '2024-12-05T14:00:00Z',
   },
   {
@@ -50,6 +52,7 @@ const SAMPLE_EVENTS: Event[] = [
     currentAttendees: 45,
     status: 'published',
     formFields: DEFAULT_FORM_FIELDS,
+    showBookedSeats: true,
     createdAt: '2024-12-10T09:00:00Z',
   },
 ];

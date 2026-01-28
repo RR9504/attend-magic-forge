@@ -279,23 +279,25 @@ export default function PublicEventPage() {
                 <p>{event.description}</p>
               </div>
 
-              {/* Spots Info */}
-              <div className="flex items-center gap-3 p-4 rounded-lg bg-secondary mb-6">
-                <Users className="w-5 h-5 text-primary" />
-                <span className="text-sm">
-                  <span className="font-semibold text-foreground">{event.currentAttendees}</span>
-                  <span className="text-muted-foreground"> av {event.maxAttendees} platser bokade</span>
-                </span>
-                <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden ml-4">
-                  <div
-                    className={cn(
-                      "h-full rounded-full transition-all",
-                      isFull ? "bg-destructive" : spotsLeft <= 5 ? "bg-warning" : "bg-success"
-                    )}
-                    style={{ width: `${(event.currentAttendees / event.maxAttendees) * 100}%` }}
-                  />
+              {/* Spots Info - Only show if enabled */}
+              {event.showBookedSeats && (
+                <div className="flex items-center gap-3 p-4 rounded-lg bg-secondary mb-6">
+                  <Users className="w-5 h-5 text-primary" />
+                  <span className="text-sm">
+                    <span className="font-semibold text-foreground">{event.currentAttendees}</span>
+                    <span className="text-muted-foreground"> av {event.maxAttendees} platser bokade</span>
+                  </span>
+                  <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden ml-4">
+                    <div
+                      className={cn(
+                        "h-full rounded-full transition-all",
+                        isFull ? "bg-destructive" : spotsLeft <= 5 ? "bg-warning" : "bg-success"
+                      )}
+                      style={{ width: `${(event.currentAttendees / event.maxAttendees) * 100}%` }}
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
         </div>
