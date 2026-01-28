@@ -1,4 +1,4 @@
-import { Event, Registration } from '@/types/event';
+import { Event, Registration, EventFormField } from '@/types/event';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -31,17 +31,42 @@ export function RegistrationList({ event, registrations }: RegistrationListProps
     );
   });
 
+  // Build display fields including conditional fields
+  const getDisplayFields = () => {
+    const fields: { key: string; label: string; type: string; isConditional?: boolean }[] = [];
+    event.formFields.forEach((field) => {
+      fields.push({ key: field.name, label: field.label, type: field.type });
+      // Add conditional field if enabled
+      if (field.type === 'checkbox' && field.conditionalField?.enabled) {
+        fields.push({
+          key: `${field.name}_conditional`,
+          label: field.conditionalField.label || 'Mer info',
+          type: field.conditionalField.type,
+          isConditional: true,
+        });
+      }
+    });
+    return fields;
+  };
+
+  const displayFields = getDisplayFields();
+
   const exportToCSV = () => {
     if (registrations.length === 0) {
       toast.error('Inga anmälningar att exportera');
       return;
     }
 
-    const fields = event.formFields.map(f => f.label);
-    const headers = [...fields, 'Registreringsdatum'];
+    const headers = [...displayFields.map(f => f.label), 'Registreringsdatum'];
     
     const rows = registrations.map(reg => {
-      const values = event.formFields.map(f => String(reg.data[f.name] || ''));
+      const values = displayFields.map(f => {
+        const value = reg.data[f.key];
+        if (f.type === 'checkbox') {
+          return value ? 'Ja' : 'Nej';
+        }
+        return String(value || '');
+      });
       values.push(new Date(reg.registeredAt).toLocaleString('sv-SE'));
       return values;
     });
@@ -176,8 +201,10 @@ export function RegistrationList({ event, registrations }: RegistrationListProps
           <Table>
             <TableHeader>
               <TableRow>
-                {event.formFields.map((field) => (
-                  <TableHead key={field.id}>{field.label}</TableHead>
+                {displayFields.map((field) => (
+                  <TableHead key={field.key} className={field.isConditional ? 'text-muted-foreground' : ''}>
+                    {field.label}
+                  </TableHead>
                 ))}
                 <TableHead>Datum</TableHead>
                 <TableHead className="w-[50px]"></TableHead>
@@ -190,14 +217,14 @@ export function RegistrationList({ event, registrations }: RegistrationListProps
                   className="animate-fade-in"
                   style={{ animationDelay: `${index * 30}ms` }}
                 >
-                  {event.formFields.map((field) => (
-                    <TableCell key={field.id}>
+                  {displayFields.map((field) => (
+                    <TableCell key={field.key}>
                       {field.type === 'checkbox' ? (
-                        <Badge variant={reg.data[field.name] ? 'success' : 'secondary'}>
-                          {reg.data[field.name] ? 'Ja' : 'Nej'}
+                        <Badge variant={reg.data[field.key] ? 'success' : 'secondary'}>
+                          {reg.data[field.key] ? 'Ja' : 'Nej'}
                         </Badge>
                       ) : (
-                        String(reg.data[field.name] || '-')
+                        String(reg.data[field.key] || '-')
                       )}
                     </TableCell>
                   ))}
