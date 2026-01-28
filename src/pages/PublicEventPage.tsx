@@ -208,25 +208,22 @@ export default function PublicEventPage() {
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="relative">
-        {/* Background Image */}
-        <div className="h-64 md:h-80 bg-gradient-to-br from-primary/20 to-accent/20 overflow-hidden">
+        {/* Background Image - Full aspect ratio */}
+        <div className="bg-gradient-to-br from-primary/20 to-accent/20">
           {event.imageUrl ? (
             <img
               src={event.imageUrl}
               alt={event.title}
-              className="w-full h-full object-cover"
-              style={{ 
-                objectPosition: `${event.imagePosition?.x ?? 50}% ${event.imagePosition?.y ?? 50}%` 
-              }}
+              className="w-full h-auto max-h-[50vh] object-contain"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-primary/10 to-accent/10" />
+            <div className="h-48 md:h-64 bg-gradient-to-br from-primary/10 to-accent/10" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent pointer-events-none" />
         </div>
 
-        {/* Content */}
-        <div className="container max-w-4xl mx-auto px-4 -mt-32 relative z-10">
+        {/* Content - overlaps the image */}
+        <div className="container max-w-4xl mx-auto px-4 -mt-16 md:-mt-24 relative z-10">
           <Card className="shadow-xl animate-fade-in">
             <CardContent className="p-6 md:p-8">
               {/* Status Badge */}
