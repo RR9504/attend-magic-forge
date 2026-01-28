@@ -1,4 +1,4 @@
-import { Event, EventFormField, DEFAULT_FORM_FIELDS } from '@/types/event';
+import { Event, EventFormField, DEFAULT_FORM_FIELDS, ConditionalField } from '@/types/event';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -352,15 +352,87 @@ export function EventForm({ initialData, onSubmit, isLoading }: EventFormProps) 
                   </select>
                 </div>
                 
-                <div className="space-y-1.5">
-                  <Label className="text-xs">Placeholder</Label>
-                  <Input
-                    value={field.placeholder || ''}
-                    onChange={(e) => updateField(field.id, { placeholder: e.target.value })}
-                    placeholder="T.ex. Ditt namn"
-                  />
-                </div>
+                {field.type !== 'checkbox' && (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Placeholder</Label>
+                    <Input
+                      value={field.placeholder || ''}
+                      onChange={(e) => updateField(field.id, { placeholder: e.target.value })}
+                      placeholder="T.ex. Ditt namn"
+                    />
+                  </div>
+                )}
               </div>
+
+              {/* Conditional field settings for checkbox */}
+              {field.type === 'checkbox' && (
+                <div className="mt-2 pt-3 border-t border-border space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      checked={field.conditionalField?.enabled || false}
+                      onCheckedChange={(checked) => {
+                        const conditionalField: ConditionalField = checked
+                          ? { enabled: true, label: '', type: 'text', required: false, placeholder: '' }
+                          : { enabled: false, label: '', type: 'text', required: false, placeholder: '' };
+                        updateField(field.id, { conditionalField });
+                      }}
+                    />
+                    <Label className="text-xs text-muted-foreground">Visa villkorligt fält när ikryssad</Label>
+                  </div>
+
+                  {field.conditionalField?.enabled && (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 p-3 rounded-md bg-muted/50">
+                      <div className="space-y-1.5">
+                        <Label className="text-xs">Fältnamn</Label>
+                        <Input
+                          value={field.conditionalField.label}
+                          onChange={(e) => updateField(field.id, {
+                            conditionalField: { ...field.conditionalField!, label: e.target.value }
+                          })}
+                          placeholder="T.ex. Beskriv mer"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <Label className="text-xs">Typ</Label>
+                        <select
+                          value={field.conditionalField.type}
+                          onChange={(e) => updateField(field.id, {
+                            conditionalField: { ...field.conditionalField!, type: e.target.value as ConditionalField['type'] }
+                          })}
+                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        >
+                          <option value="text">Text</option>
+                          <option value="email">E-post</option>
+                          <option value="tel">Telefon</option>
+                          <option value="textarea">Fritext</option>
+                        </select>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <Label className="text-xs">Placeholder</Label>
+                        <Input
+                          value={field.conditionalField.placeholder || ''}
+                          onChange={(e) => updateField(field.id, {
+                            conditionalField: { ...field.conditionalField!, placeholder: e.target.value }
+                          })}
+                          placeholder="T.ex. Ange detaljer"
+                        />
+                      </div>
+
+                      <div className="flex items-center gap-2 md:col-span-3">
+                        <Switch
+                          checked={field.conditionalField.required}
+                          onCheckedChange={(checked) => updateField(field.id, {
+                            conditionalField: { ...field.conditionalField!, required: checked }
+                          })}
+                        />
+                        <Label className="text-xs text-muted-foreground">Obligatoriskt när synligt</Label>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </CardContent>
