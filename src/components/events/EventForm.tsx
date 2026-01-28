@@ -371,9 +371,19 @@ export function EventForm({ initialData, onSubmit, isLoading }: EventFormProps) 
                 )}
               </div>
 
-              {/* Conditional field settings for checkbox */}
+              {/* Checkbox-specific settings */}
               {field.type === 'checkbox' && (
                 <div className="mt-2 pt-3 border-t border-border space-y-3">
+                  {/* Extra attendee toggle */}
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      checked={field.countsAsExtraAttendee || false}
+                      onCheckedChange={(checked) => updateField(field.id, { countsAsExtraAttendee: checked })}
+                    />
+                    <Label className="text-xs text-muted-foreground">Räknas som +1 deltagare när ikryssad</Label>
+                  </div>
+
+                  {/* Conditional field toggle */}
                   <div className="flex items-center gap-2">
                     <Switch
                       checked={field.conditionalField?.enabled || false}
