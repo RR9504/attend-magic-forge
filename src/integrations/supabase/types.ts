@@ -22,6 +22,7 @@ export type Database = {
           description: string | null
           form_fields: Json
           id: string
+          image_position: Json | null
           image_url: string | null
           location: string
           max_attendees: number
@@ -36,6 +37,7 @@ export type Database = {
           description?: string | null
           form_fields?: Json
           id?: string
+          image_position?: Json | null
           image_url?: string | null
           location: string
           max_attendees?: number
@@ -50,6 +52,7 @@ export type Database = {
           description?: string | null
           form_fields?: Json
           id?: string
+          image_position?: Json | null
           image_url?: string | null
           location?: string
           max_attendees?: number
