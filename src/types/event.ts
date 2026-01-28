@@ -35,6 +35,7 @@ export interface Event {
   currentAttendees: number;
   status: 'draft' | 'published' | 'closed';
   formFields: EventFormField[];
+  showBookedSeats: boolean;
   createdAt: string;
 }
 

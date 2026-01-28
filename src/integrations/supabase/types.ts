@@ -26,6 +26,7 @@ export type Database = {
           image_url: string | null
           location: string
           max_attendees: number
+          show_booked_seats: boolean
           status: string
           time: string
           title: string
@@ -41,6 +42,7 @@ export type Database = {
           image_url?: string | null
           location: string
           max_attendees?: number
+          show_booked_seats?: boolean
           status?: string
           time: string
           title: string
@@ -56,6 +58,7 @@ export type Database = {
           image_url?: string | null
           location?: string
           max_attendees?: number
+          show_booked_seats?: boolean
           status?: string
           time?: string
           title?: string

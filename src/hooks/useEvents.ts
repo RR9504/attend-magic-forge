@@ -17,6 +17,7 @@ const mapDbEventToEvent = (dbEvent: any): Event => ({
   currentAttendees: dbEvent.current_attendees,
   status: dbEvent.status as Event['status'],
   formFields: (dbEvent.form_fields as EventFormField[]) || DEFAULT_FORM_FIELDS,
+  showBookedSeats: dbEvent.show_booked_seats ?? true,
   createdAt: dbEvent.created_at,
 });
 
@@ -84,6 +85,7 @@ export const useCreateEvent = () => {
         max_attendees: event.maxAttendees,
         status: event.status,
         form_fields: event.formFields as unknown as TablesInsert<'events'>['form_fields'],
+        show_booked_seats: event.showBookedSeats,
       };
 
       const { data, error } = await supabase
@@ -119,6 +121,7 @@ export const useUpdateEvent = () => {
       if (updates.maxAttendees !== undefined) dbUpdates.max_attendees = updates.maxAttendees;
       if (updates.status !== undefined) dbUpdates.status = updates.status;
       if (updates.formFields !== undefined) dbUpdates.form_fields = updates.formFields;
+      if (updates.showBookedSeats !== undefined) dbUpdates.show_booked_seats = updates.showBookedSeats;
 
       const { data, error } = await supabase
         .from('events')
