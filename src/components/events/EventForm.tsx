@@ -201,6 +201,9 @@ export function EventForm({ initialData, onSubmit, isLoading }: EventFormProps) 
       <Card>
         <CardHeader>
           <CardTitle className="font-display">Eventbild</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Rekommenderad upplösning: <strong>1920 × 1080 px</strong> (16:9) för bästa kvalitet
+          </p>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Upload button */}
