@@ -1,4 +1,4 @@
-import { Event, EventFormField, DEFAULT_FORM_FIELDS, ConditionalField } from '@/types/event';
+import { Event, EventFormField, DEFAULT_FORM_FIELDS, ConditionalField, ImagePosition } from '@/types/event';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { useState, useRef } from 'react';
 import { Plus, Trash2, GripVertical, Save, Image as ImageIcon, Upload, X, Loader2 } from 'lucide-react';
+import { ImagePositioner } from './ImagePositioner';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -24,6 +25,9 @@ export function EventForm({ initialData, onSubmit, isLoading }: EventFormProps) 
   const [time, setTime] = useState(initialData?.time || '');
   const [location, setLocation] = useState(initialData?.location || '');
   const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || '');
+  const [imagePosition, setImagePosition] = useState<ImagePosition>(
+    initialData?.imagePosition || { x: 50, y: 50 }
+  );
   const [maxAttendees, setMaxAttendees] = useState(initialData?.maxAttendees || 50);
   const [status, setStatus] = useState<Event['status']>(initialData?.status || 'draft');
   const [formFields, setFormFields] = useState<EventFormField[]>(
@@ -90,6 +94,7 @@ export function EventForm({ initialData, onSubmit, isLoading }: EventFormProps) 
       time,
       location,
       imageUrl,
+      imagePosition,
       maxAttendees,
       status,
       formFields,
@@ -260,15 +265,15 @@ export function EventForm({ initialData, onSubmit, isLoading }: EventFormProps) 
           </div>
           
           {imageUrl && (
-            <div className="relative w-full h-48 rounded-lg overflow-hidden bg-secondary">
-              <img
-                src={imageUrl}
-                alt="Event preview"
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                }}
+            <div className="space-y-2">
+              <ImagePositioner
+                imageUrl={imageUrl}
+                position={imagePosition}
+                onChange={setImagePosition}
               />
+              <p className="text-xs text-muted-foreground text-center">
+                Position: {Math.round(imagePosition.x)}% horisontellt, {Math.round(imagePosition.y)}% vertikalt
+              </p>
             </div>
           )}
           
