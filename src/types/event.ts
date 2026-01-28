@@ -15,6 +15,7 @@ export interface EventFormField {
   placeholder?: string;
   options?: string[];
   conditionalField?: ConditionalField;
+  countsAsExtraAttendee?: boolean; // For checkbox fields - adds +1 to attendee count when checked
 }
 
 export interface ImagePosition {
