@@ -1,3 +1,11 @@
+export interface ConditionalField {
+  enabled: boolean;
+  label: string;
+  type: 'text' | 'email' | 'tel' | 'textarea';
+  required: boolean;
+  placeholder?: string;
+}
+
 export interface EventFormField {
   id: string;
   name: string;
@@ -6,6 +14,7 @@ export interface EventFormField {
   required: boolean;
   placeholder?: string;
   options?: string[];
+  conditionalField?: ConditionalField;
 }
 
 export interface Event {

@@ -1,6 +1,7 @@
 import { useEvent } from '@/hooks/useEvents';
 import { useCreateRegistration } from '@/hooks/useRegistrations';
 import { useParams, Link } from 'react-router-dom';
+import { EventFormField } from '@/types/event';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -83,6 +84,24 @@ export default function PublicEventPage() {
       if (error) {
         errors[field.name] = error;
         isValid = false;
+      }
+
+      // Validate conditional field if checkbox is checked and conditional field is enabled
+      const typedField = field as EventFormField;
+      if (field.type === 'checkbox' && typedField.conditionalField?.enabled && formData[field.name] === true) {
+        const conditionalValue = formData[`${field.name}_conditional`];
+        const conditionalError = validateField(
+          { 
+            name: `${field.name}_conditional`, 
+            type: typedField.conditionalField.type, 
+            required: typedField.conditionalField.required 
+          }, 
+          conditionalValue
+        );
+        if (conditionalError) {
+          errors[`${field.name}_conditional`] = conditionalError;
+          isValid = false;
+        }
       }
     });
 
@@ -313,22 +332,63 @@ export default function PublicEventPage() {
                     style={{ animationDelay: `${index * 50}ms` }}
                   >
                     {field.type === 'checkbox' ? (
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-3">
-                          <Checkbox
-                            id={field.id}
-                            checked={formData[field.name] as boolean}
-                            onCheckedChange={(checked) => updateFormData(field.name, !!checked)}
-                          />
-                          <Label htmlFor={field.id} className="cursor-pointer">
-                            {field.label}
-                            {field.required && <span className="text-destructive ml-1">*</span>}
-                          </Label>
+                      <div className="space-y-3">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-3">
+                            <Checkbox
+                              id={field.id}
+                              checked={formData[field.name] as boolean}
+                              onCheckedChange={(checked) => updateFormData(field.name, !!checked)}
+                            />
+                            <Label htmlFor={field.id} className="cursor-pointer">
+                              {field.label}
+                              {field.required && <span className="text-destructive ml-1">*</span>}
+                            </Label>
+                          </div>
+                          {formErrors[field.name] && (
+                            <div className="flex items-center gap-1 text-destructive text-sm">
+                              <AlertCircle className="w-3 h-3" />
+                              {formErrors[field.name]}
+                            </div>
+                          )}
                         </div>
-                        {formErrors[field.name] && (
-                          <div className="flex items-center gap-1 text-destructive text-sm">
-                            <AlertCircle className="w-3 h-3" />
-                            {formErrors[field.name]}
+                        
+                        {/* Conditional field that shows when checkbox is checked */}
+                        {(field as EventFormField).conditionalField?.enabled && formData[field.name] === true && (
+                          <div className="ml-6 pl-3 border-l-2 border-primary/30 space-y-2 animate-fade-in">
+                            <Label htmlFor={`${field.id}-conditional`}>
+                              {(field as EventFormField).conditionalField?.label || 'Mer information'}
+                              {(field as EventFormField).conditionalField?.required && <span className="text-destructive ml-1">*</span>}
+                            </Label>
+                            {(field as EventFormField).conditionalField?.type === 'textarea' ? (
+                              <Textarea
+                                id={`${field.id}-conditional`}
+                                value={(formData[`${field.name}_conditional`] as string) || ''}
+                                onChange={(e) => updateFormData(`${field.name}_conditional`, e.target.value)}
+                                placeholder={(field as EventFormField).conditionalField?.placeholder}
+                                required={(field as EventFormField).conditionalField?.required}
+                                rows={3}
+                                maxLength={2000}
+                                className={cn(formErrors[`${field.name}_conditional`] && "border-destructive")}
+                              />
+                            ) : (
+                              <Input
+                                id={`${field.id}-conditional`}
+                                type={(field as EventFormField).conditionalField?.type || 'text'}
+                                value={(formData[`${field.name}_conditional`] as string) || ''}
+                                onChange={(e) => updateFormData(`${field.name}_conditional`, e.target.value)}
+                                placeholder={(field as EventFormField).conditionalField?.placeholder}
+                                required={(field as EventFormField).conditionalField?.required}
+                                maxLength={(field as EventFormField).conditionalField?.type === 'email' ? 255 : 500}
+                                className={cn(formErrors[`${field.name}_conditional`] && "border-destructive")}
+                              />
+                            )}
+                            {formErrors[`${field.name}_conditional`] && (
+                              <div className="flex items-center gap-1 text-destructive text-sm">
+                                <AlertCircle className="w-3 h-3" />
+                                {formErrors[`${field.name}_conditional`]}
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
