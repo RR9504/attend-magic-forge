@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Event, EventFormField, DEFAULT_FORM_FIELDS } from '@/types/event';
+import { Event, EventFormField, DEFAULT_FORM_FIELDS, ImagePosition } from '@/types/event';
 import { TablesInsert } from '@/integrations/supabase/types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -12,6 +12,7 @@ const mapDbEventToEvent = (dbEvent: any): Event => ({
   time: dbEvent.time?.slice(0, 5) || '', // Remove seconds
   location: dbEvent.location,
   imageUrl: dbEvent.image_url || '',
+  imagePosition: (dbEvent.image_position as ImagePosition) || { x: 50, y: 50 },
   maxAttendees: dbEvent.max_attendees,
   currentAttendees: dbEvent.current_attendees,
   status: dbEvent.status as Event['status'],
@@ -79,6 +80,7 @@ export const useCreateEvent = () => {
         time: event.time,
         location: event.location,
         image_url: event.imageUrl,
+        image_position: event.imagePosition as unknown as TablesInsert<'events'>['image_position'],
         max_attendees: event.maxAttendees,
         status: event.status,
         form_fields: event.formFields as unknown as TablesInsert<'events'>['form_fields'],
@@ -113,6 +115,7 @@ export const useUpdateEvent = () => {
       if (updates.time !== undefined) dbUpdates.time = updates.time;
       if (updates.location !== undefined) dbUpdates.location = updates.location;
       if (updates.imageUrl !== undefined) dbUpdates.image_url = updates.imageUrl;
+      if (updates.imagePosition !== undefined) dbUpdates.image_position = updates.imagePosition;
       if (updates.maxAttendees !== undefined) dbUpdates.max_attendees = updates.maxAttendees;
       if (updates.status !== undefined) dbUpdates.status = updates.status;
       if (updates.formFields !== undefined) dbUpdates.form_fields = updates.formFields;

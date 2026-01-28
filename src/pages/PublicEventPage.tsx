@@ -215,6 +215,9 @@ export default function PublicEventPage() {
               src={event.imageUrl}
               alt={event.title}
               className="w-full h-full object-cover"
+              style={{ 
+                objectPosition: `${event.imagePosition?.x ?? 50}% ${event.imagePosition?.y ?? 50}%` 
+              }}
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-primary/10 to-accent/10" />
