@@ -38,14 +38,24 @@ export const useCreateRegistration = () => {
         data: data as unknown as TablesInsert<'registrations'>['data'],
       };
 
-      const { data: registration, error } = await supabase
+      // IMPORTANT:
+      // Public (anon) users are allowed to INSERT registrations, but they are NOT allowed to SELECT
+      // from the registrations table (PII). Therefore we must NOT do `.select()` here.
+      // If we did, the INSERT could succeed but the subsequent SELECT would fail, and the UI would
+      // incorrectly show an error (and users might submit multiple times).
+      const { error } = await supabase
         .from('registrations')
-        .insert(insertData)
-        .select()
-        .single();
+        .insert(insertData);
 
       if (error) throw error;
-      return mapDbRegistrationToRegistration(registration);
+
+      // Return a client-side receipt (not the DB row) since we can't read it back under RLS.
+      return {
+        id: crypto.randomUUID(),
+        eventId,
+        data,
+        registeredAt: new Date().toISOString(),
+      } satisfies Registration;
     },
     onSuccess: (_, { eventId }) => {
       queryClient.invalidateQueries({ queryKey: ['registrations', eventId] });
