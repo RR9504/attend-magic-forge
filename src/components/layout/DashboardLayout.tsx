@@ -1,17 +1,21 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { 
-  Calendar, 
-  LayoutDashboard, 
+import {
+  Calendar,
+  LayoutDashboard,
   Plus,
-  LogOut
+  LogOut,
+  Ticket,
+  Store
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { name: 'Kampanjer', href: '/dashboard/campaigns', icon: Ticket },
+  { name: 'Butiker', href: '/dashboard/stores', icon: Store },
 ];
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {

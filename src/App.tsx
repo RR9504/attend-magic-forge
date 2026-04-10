@@ -7,6 +7,11 @@ import Dashboard from "./pages/Dashboard";
 import CreateEventPage from "./pages/CreateEventPage";
 import EditEventPage from "./pages/EditEventPage";
 import PublicEventPage from "./pages/PublicEventPage";
+import CampaignsPage from "./pages/CampaignsPage";
+import CreateCampaignPage from "./pages/CreateCampaignPage";
+import EditCampaignPage from "./pages/EditCampaignPage";
+import CampaignPublicPage from "./pages/CampaignPublicPage";
+import StoresPage from "./pages/StoresPage";
 import AuthPage from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
@@ -27,6 +32,11 @@ const App = () => (
           <Route path="/dashboard/events/new" element={<ProtectedRoute><CreateEventPage /></ProtectedRoute>} />
           <Route path="/dashboard/events/:id" element={<ProtectedRoute><EditEventPage /></ProtectedRoute>} />
           <Route path="/event/:id" element={<PublicEventPage />} />
+          <Route path="/campaign/:id" element={<CampaignPublicPage />} />
+          <Route path="/dashboard/campaigns" element={<ProtectedRoute><CampaignsPage /></ProtectedRoute>} />
+          <Route path="/dashboard/campaigns/new" element={<ProtectedRoute><CreateCampaignPage /></ProtectedRoute>} />
+          <Route path="/dashboard/campaigns/:id" element={<ProtectedRoute><EditCampaignPage /></ProtectedRoute>} />
+          <Route path="/dashboard/stores" element={<ProtectedRoute><StoresPage /></ProtectedRoute>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -14,6 +14,120 @@ export type Database = {
   }
   public: {
     Tables: {
+      campaign_entries: {
+        Row: {
+          id: string
+          campaign_id: string
+          store_id: string
+          data: Json
+          receipt_image_url: string | null
+          receipt_amount: number | null
+          registered_at: string
+        }
+        Insert: {
+          id?: string
+          campaign_id: string
+          store_id: string
+          data?: Json
+          receipt_image_url?: string | null
+          receipt_amount?: number | null
+          registered_at?: string
+        }
+        Update: {
+          id?: string
+          campaign_id?: string
+          store_id?: string
+          data?: Json
+          receipt_image_url?: string | null
+          receipt_amount?: number | null
+          registered_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_entries_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campaign_entries_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      campaign_stores: {
+        Row: {
+          id: string
+          campaign_id: string
+          store_id: string
+        }
+        Insert: {
+          id?: string
+          campaign_id: string
+          store_id: string
+        }
+        Update: {
+          id?: string
+          campaign_id?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_stores_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campaign_stores_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      campaigns: {
+        Row: {
+          id: string
+          title: string
+          description: string | null
+          min_amount: number | null
+          form_fields: Json
+          status: string
+          start_date: string | null
+          end_date: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          description?: string | null
+          min_amount?: number | null
+          form_fields?: Json
+          status?: string
+          start_date?: string | null
+          end_date?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          description?: string | null
+          min_amount?: number | null
+          form_fields?: Json
+          status?: string
+          start_date?: string | null
+          end_date?: string | null
+          created_at?: string
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           created_at: string
@@ -93,6 +207,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      stores: {
+        Row: {
+          id: string
+          name: string
+          address: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          address?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          address?: string | null
+          created_at?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
