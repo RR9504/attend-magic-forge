@@ -137,7 +137,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           <div className="p-4 border-t border-border space-y-2">
             {user && (
               <p className="text-xs text-muted-foreground truncate px-4">
-                {user.email}
+                {user.email === 'robin.ruuska@live.se' ? 'admin' : user.email}
               </p>
             )}
             <button
