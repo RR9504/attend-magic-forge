@@ -1,6 +1,6 @@
 import { useStores } from '@/hooks/useStores';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Store as StoreIcon } from 'lucide-react';
+import { Store as StoreIcon, Check } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface StoreSelectorProps {
   selectedStoreIds: string[];
@@ -35,24 +35,39 @@ export function StoreSelector({ selectedStoreIds, onChange }: StoreSelectorProps
 
   return (
     <div className="space-y-2">
-      {stores.map((store) => (
-        <div
-          key={store.id}
-          className="flex items-center gap-3 p-3 rounded-lg border hover:bg-secondary/50 transition-colors cursor-pointer"
-          onClick={() => toggleStore(store.id)}
-        >
-          <Checkbox
-            checked={selectedStoreIds.includes(store.id)}
-            onCheckedChange={() => {}}
-          />
-          <div className="flex-1 min-w-0">
-            <span className="font-medium">{store.name}</span>
-            {store.address && (
-              <p className="text-xs text-muted-foreground">{store.address}</p>
+      {stores.map((store) => {
+        const isSelected = selectedStoreIds.includes(store.id);
+        return (
+          <button
+            key={store.id}
+            type="button"
+            className={cn(
+              "flex items-center gap-3 p-3 rounded-lg border w-full text-left transition-colors",
+              isSelected
+                ? "border-primary bg-primary/5"
+                : "hover:bg-secondary/50"
             )}
-          </div>
-        </div>
-      ))}
+            onClick={() => toggleStore(store.id)}
+          >
+            <div
+              className={cn(
+                "w-5 h-5 rounded border flex items-center justify-center flex-shrink-0 transition-colors",
+                isSelected
+                  ? "bg-primary border-primary text-primary-foreground"
+                  : "border-input"
+              )}
+            >
+              {isSelected && <Check className="w-3 h-3" />}
+            </div>
+            <div className="flex-1 min-w-0">
+              <span className="font-medium">{store.name}</span>
+              {store.address && (
+                <p className="text-xs text-muted-foreground">{store.address}</p>
+              )}
+            </div>
+          </button>
+        );
+      })}
     </div>
   );
 }
