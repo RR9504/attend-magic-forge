@@ -21,8 +21,12 @@ import { cn } from '@/lib/utils';
 export default function StaffEventsPublicPage() {
   const { data: staffEvents = [], isLoading } = useStaffEvents();
 
-  const openEvents = staffEvents.filter(e => e.status === 'open');
-  const fullEvents = staffEvents.filter(e => e.status === 'full');
+  const availableEvents = staffEvents.filter(
+    e => e.status === 'open' && e.currentSignups < e.staffNeeded
+  );
+  const fullEvents = staffEvents.filter(
+    e => e.status === 'full' || (e.status === 'open' && e.currentSignups >= e.staffNeeded)
+  );
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('sv-SE', {
@@ -53,13 +57,13 @@ export default function StaffEventsPublicPage() {
           </div>
         ) : (
           <>
-            {/* Open events */}
-            {openEvents.length > 0 && (
+            {/* Available events */}
+            {availableEvents.length > 0 && (
               <div className="space-y-4">
                 <h2 className="font-display text-lg font-semibold text-foreground">
-                  Anmäl dig
+                  Lediga platser — anmäl dig!
                 </h2>
-                {openEvents.map((event, index) => (
+                {availableEvents.map((event, index) => (
                   <StaffEventCard
                     key={event.id}
                     event={event}
@@ -95,7 +99,7 @@ export default function StaffEventsPublicPage() {
               </div>
             )}
 
-            {openEvents.length === 0 && fullEvents.length === 0 && (
+            {availableEvents.length === 0 && fullEvents.length === 0 && (
               <div className="text-center py-16">
                 <Calendar className="w-16 h-16 mx-auto text-muted-foreground/30 mb-4" />
                 <h3 className="font-display text-lg font-semibold text-foreground mb-2">

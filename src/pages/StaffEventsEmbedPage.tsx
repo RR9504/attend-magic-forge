@@ -22,8 +22,10 @@ import { cn } from '@/lib/utils';
 export default function StaffEventsEmbedPage() {
   const { data: staffEvents = [], isLoading } = useStaffEvents();
 
-  const openEvents = staffEvents.filter(e => e.status === 'open');
-  const fullEvents = staffEvents.filter(e => e.status === 'full');
+  // Embed only shows events with available spots
+  const availableEvents = staffEvents.filter(
+    e => e.status === 'open' && e.currentSignups < e.staffNeeded
+  );
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('sv-SE', {
@@ -41,9 +43,9 @@ export default function StaffEventsEmbedPage() {
         <p className="text-sm text-muted-foreground text-center py-8">Laddar event...</p>
       ) : (
         <>
-          {openEvents.length > 0 && (
+          {availableEvents.length > 0 ? (
             <div className="space-y-2">
-              {openEvents.map((event, index) => (
+              {availableEvents.map((event, index) => (
                 <EmbedEventCard
                   key={event.id}
                   event={event}
@@ -52,29 +54,9 @@ export default function StaffEventsEmbedPage() {
                 />
               ))}
             </div>
-          )}
-
-          {fullEvents.length > 0 && (
-            <div className="space-y-2 pt-2">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Fullbokade</p>
-              {fullEvents.map((event) => (
-                <div
-                  key={event.id}
-                  className="flex items-center justify-between p-3 rounded-lg border opacity-60 text-sm"
-                >
-                  <div>
-                    <span className="font-medium">{event.title}</span>
-                    <span className="text-muted-foreground ml-2 text-xs">{formatDate(event.date)}</span>
-                  </div>
-                  <Badge variant="secondary" className="text-xs">Full</Badge>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {openEvents.length === 0 && fullEvents.length === 0 && (
+          ) : (
             <p className="text-sm text-muted-foreground text-center py-8">
-              Inga event just nu. Fler tillkommer under året!
+              Alla event är fullbokade just nu. Fler tillkommer under året!
             </p>
           )}
 
