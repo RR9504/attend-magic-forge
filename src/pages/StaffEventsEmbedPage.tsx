@@ -82,20 +82,23 @@ function EmbedEventCard({
   const createSignupMutation = useCreateStaffSignup();
   const [showForm, setShowForm] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [nameError, setNameError] = useState('');
+
+  const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) {
-      setNameError('Ange ditt namn');
+    if (!firstName.trim() || !lastName.trim()) {
+      setNameError('Ange både för- och efternamn');
       return;
     }
 
     createSignupMutation.mutate(
       {
         eventId: event.id,
-        name: name.trim(),
+        name: fullName,
       },
       {
         onSuccess: () => {
@@ -117,7 +120,7 @@ function EmbedEventCard({
     return (
       <div className="flex items-center gap-2 p-3 rounded-lg bg-success/10 border border-success/20 text-sm animate-fade-in">
         <CheckCircle2 className="w-4 h-4 text-success flex-shrink-0" />
-        <span>Tack {name}! Du är anmäld till <strong>{event.title}</strong>.</span>
+        <span>Tack {fullName}! Du är anmäld till <strong>{event.title}</strong>.</span>
       </div>
     );
   }
@@ -138,13 +141,23 @@ function EmbedEventCard({
 
         <form onSubmit={handleSubmit} className="flex items-end gap-2">
           <div className="flex-1 space-y-1">
-            <Label htmlFor={`embed-name-${event.id}`} className="text-xs">Namn *</Label>
+            <Label htmlFor={`embed-fname-${event.id}`} className="text-xs">Förnamn *</Label>
             <Input
-              id={`embed-name-${event.id}`}
-              value={name}
-              onChange={(e) => { setName(e.target.value); setNameError(''); }}
-              placeholder="Ditt namn"
-              className={cn("h-9 text-sm", nameError && "border-destructive")}
+              id={`embed-fname-${event.id}`}
+              value={firstName}
+              onChange={(e) => { setFirstName(e.target.value); setNameError(''); }}
+              placeholder="Förnamn"
+              className={cn("h-9 text-sm", nameError && !firstName.trim() && "border-destructive")}
+            />
+          </div>
+          <div className="flex-1 space-y-1">
+            <Label htmlFor={`embed-lname-${event.id}`} className="text-xs">Efternamn *</Label>
+            <Input
+              id={`embed-lname-${event.id}`}
+              value={lastName}
+              onChange={(e) => { setLastName(e.target.value); setNameError(''); }}
+              placeholder="Efternamn"
+              className={cn("h-9 text-sm", nameError && !lastName.trim() && "border-destructive")}
             />
             {nameError && (
               <p className="text-xs text-destructive flex items-center gap-1">

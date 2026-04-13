@@ -135,20 +135,23 @@ function StaffEventCard({
   const createSignupMutation = useCreateStaffSignup();
   const [showForm, setShowForm] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [nameError, setNameError] = useState('');
+
+  const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) {
-      setNameError('Ange ditt namn');
+    if (!firstName.trim() || !lastName.trim()) {
+      setNameError('Ange både för- och efternamn');
       return;
     }
 
     createSignupMutation.mutate(
       {
         eventId: event.id,
-        name: name.trim(),
+        name: fullName,
       },
       {
         onSuccess: () => {
@@ -221,19 +224,29 @@ function StaffEventCard({
           <div className="flex items-center gap-2 p-3 rounded-lg bg-success/10 border border-success/20 animate-fade-in">
             <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0" />
             <span className="text-sm text-foreground">
-              Tack {name}! Du är anmäld till {event.title}.
+              Tack {fullName}! Du är anmäld till {event.title}.
             </span>
           </div>
         ) : showForm ? (
           <form onSubmit={handleSubmit} className="flex items-end gap-2 pt-3 border-t border-border animate-fade-in">
             <div className="flex-1 space-y-1">
-              <Label htmlFor={`name-${event.id}`} className="text-xs">Namn *</Label>
+              <Label htmlFor={`fname-${event.id}`} className="text-xs">Förnamn *</Label>
               <Input
-                id={`name-${event.id}`}
-                value={name}
-                onChange={(e) => { setName(e.target.value); setNameError(''); }}
-                placeholder="Ditt namn"
-                className={cn(nameError && "border-destructive")}
+                id={`fname-${event.id}`}
+                value={firstName}
+                onChange={(e) => { setFirstName(e.target.value); setNameError(''); }}
+                placeholder="Förnamn"
+                className={cn(nameError && !firstName.trim() && "border-destructive")}
+              />
+            </div>
+            <div className="flex-1 space-y-1">
+              <Label htmlFor={`lname-${event.id}`} className="text-xs">Efternamn *</Label>
+              <Input
+                id={`lname-${event.id}`}
+                value={lastName}
+                onChange={(e) => { setLastName(e.target.value); setNameError(''); }}
+                placeholder="Efternamn"
+                className={cn(nameError && !lastName.trim() && "border-destructive")}
               />
               {nameError && (
                 <p className="text-xs text-destructive flex items-center gap-1">
