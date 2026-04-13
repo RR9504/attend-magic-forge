@@ -30,6 +30,7 @@ import {
   ChevronUp,
   Copy,
   ExternalLink,
+  Code,
 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -118,9 +119,14 @@ export default function StaffEventsAdminPage() {
   };
 
   const copyInternLink = () => {
-    const link = `${window.location.origin}/intern`;
-    navigator.clipboard.writeText(link);
+    navigator.clipboard.writeText('https://smsparbank-event.se/intern');
     toast.success('Länk kopierad till urklipp!');
+  };
+
+  const copyEmbedCode = () => {
+    const code = `<iframe src="https://smsparbank-event.se/intern/embed" style="width:100%;min-height:600px;border:none;" title="Interna event"></iframe>`;
+    navigator.clipboard.writeText(code);
+    toast.success('Embed-kod kopierad till urklipp!');
   };
 
   const formatDate = (dateStr: string) => {
@@ -148,7 +154,11 @@ export default function StaffEventsAdminPage() {
               Hantera personalbemanningen för bankens event
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
+            <Button variant="outline" size="sm" onClick={copyEmbedCode}>
+              <Code className="w-4 h-4" />
+              <span className="ml-1">Embed-kod</span>
+            </Button>
             <Button variant="outline" size="sm" onClick={copyInternLink}>
               <Copy className="w-4 h-4" />
               <span className="ml-1">Intern länk</span>
