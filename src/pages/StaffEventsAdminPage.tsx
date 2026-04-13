@@ -296,7 +296,8 @@ export default function StaffEventsAdminPage() {
           <div className="space-y-8">
             {/* Lediga platser */}
             {(() => {
-              const available = staffEvents.filter(e => e.status === 'open' && e.currentSignups < e.staffNeeded);
+              const today = new Date().toISOString().split('T')[0];
+              const available = staffEvents.filter(e => e.status === 'open' && e.currentSignups < e.staffNeeded && e.date >= today);
               return available.length > 0 ? (
                 <div className="space-y-3">
                   <h2 className="font-display text-lg font-semibold text-foreground">
@@ -320,13 +321,14 @@ export default function StaffEventsAdminPage() {
               ) : null;
             })()}
 
-            {/* Fullbokade */}
+            {/* Fullbokade / Passerade */}
             {(() => {
-              const full = staffEvents.filter(e => e.status === 'full' || (e.status === 'open' && e.currentSignups >= e.staffNeeded));
+              const today = new Date().toISOString().split('T')[0];
+              const full = staffEvents.filter(e => e.status === 'full' || (e.status === 'open' && (e.currentSignups >= e.staffNeeded || e.date < today)));
               return full.length > 0 ? (
                 <div className="space-y-3">
                   <h2 className="font-display text-lg font-semibold text-muted-foreground">
-                    Fullbokade ({full.length})
+                    Fullbokade / Passerade ({full.length})
                   </h2>
                   {full.map((event, index) => (
                     <StaffEventRow

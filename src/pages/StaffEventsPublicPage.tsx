@@ -21,11 +21,12 @@ import { cn } from '@/lib/utils';
 export default function StaffEventsPublicPage() {
   const { data: staffEvents = [], isLoading } = useStaffEvents();
 
+  const today = new Date().toISOString().split('T')[0];
   const availableEvents = staffEvents.filter(
-    e => e.status === 'open' && e.currentSignups < e.staffNeeded
+    e => e.status === 'open' && e.currentSignups < e.staffNeeded && e.date >= today
   );
   const fullEvents = staffEvents.filter(
-    e => e.status === 'full' || (e.status === 'open' && e.currentSignups >= e.staffNeeded)
+    e => e.status === 'full' || (e.status === 'open' && (e.currentSignups >= e.staffNeeded || e.date < today))
   );
 
   const formatDate = (dateStr: string) => {
