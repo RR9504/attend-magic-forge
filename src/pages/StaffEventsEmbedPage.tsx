@@ -102,8 +102,12 @@ function EmbedEventCard({
           setIsSubmitted(true);
           toast.success('Tack för din anmälan!');
         },
-        onError: () => {
-          toast.error('Kunde inte anmäla. Eventet kan vara fullt.');
+        onError: (err) => {
+          toast.error(
+            err?.message === 'DUPLICATE'
+              ? 'Du är redan anmäld till detta event!'
+              : 'Kunde inte anmäla. Eventet kan vara fullt.'
+          );
         },
       }
     );

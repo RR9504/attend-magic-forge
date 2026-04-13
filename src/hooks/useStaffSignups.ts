@@ -71,7 +71,12 @@ export const useCreateStaffSignup = () => {
         .from('staff_signups')
         .insert(insertData);
 
-      if (error) throw error;
+      if (error) {
+        if (error.code === '23505') {
+          throw new Error('DUPLICATE');
+        }
+        throw error;
+      }
 
       return {
         id: crypto.randomUUID(),
