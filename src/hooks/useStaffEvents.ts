@@ -11,6 +11,7 @@ const mapDbStaffEvent = (db: any): StaffEvent => ({
   time: db.time?.slice(0, 5) || undefined,
   location: db.location || undefined,
   staffNeeded: db.staff_needed,
+  currentSignups: db.current_signups || 0,
   status: db.status as StaffEvent['status'],
   createdAt: db.created_at,
 });

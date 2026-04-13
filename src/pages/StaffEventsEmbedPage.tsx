@@ -209,10 +209,18 @@ function EmbedEventCard({
             )}
           </div>
         </div>
-        <div className="flex items-center gap-1.5 text-xs flex-shrink-0">
-          <Users className="w-3.5 h-3.5 text-muted-foreground" />
-          <span className="font-semibold">{event.staffNeeded}</span>
-          <span className="text-muted-foreground">behövs</span>
+        <div
+          className={cn(
+            "flex flex-col items-center px-2 py-1 rounded text-xs font-semibold flex-shrink-0",
+            event.currentSignups >= event.staffNeeded
+              ? "bg-success/10 text-success"
+              : event.currentSignups > 0
+                ? "bg-warning/10 text-warning"
+                : "bg-muted text-muted-foreground"
+          )}
+        >
+          <span>{event.currentSignups}/{event.staffNeeded}</span>
+          <span className="text-[10px] font-normal">anmälda</span>
         </div>
       </div>
     </button>

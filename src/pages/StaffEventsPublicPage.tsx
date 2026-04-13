@@ -192,16 +192,18 @@ function StaffEventCard({
           </div>
 
           {/* Staffing indicator */}
-          <div className="flex items-center gap-2">
-            <div className="text-right">
-              <div className="flex items-center gap-1 text-sm">
-                <Users className="w-4 h-4 text-muted-foreground" />
-                <span className="font-semibold text-foreground">
-                  {event.staffNeeded}
-                </span>
-                <span className="text-muted-foreground">behövs</span>
-              </div>
-            </div>
+          <div
+            className={cn(
+              "flex flex-col items-center px-3 py-2 rounded-lg text-sm font-bold flex-shrink-0",
+              event.currentSignups >= event.staffNeeded
+                ? "bg-success/10 text-success"
+                : event.currentSignups > 0
+                  ? "bg-warning/10 text-warning"
+                  : "bg-muted text-muted-foreground"
+            )}
+          >
+            <span>{event.currentSignups}/{event.staffNeeded}</span>
+            <span className="text-[10px] font-normal">anmälda</span>
           </div>
         </div>
 

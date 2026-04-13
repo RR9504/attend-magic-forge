@@ -217,6 +217,7 @@ export type Database = {
           time: string | null
           location: string | null
           staff_needed: number
+          current_signups: number
           status: string
           created_at: string
         }
@@ -228,6 +229,7 @@ export type Database = {
           time?: string | null
           location?: string | null
           staff_needed?: number
+          current_signups?: number
           status?: string
           created_at?: string
         }
@@ -239,6 +241,7 @@ export type Database = {
           time?: string | null
           location?: string | null
           staff_needed?: number
+          current_signups?: number
           status?: string
           created_at?: string
         }

@@ -6,6 +6,7 @@ export interface StaffEvent {
   time?: string;
   location?: string;
   staffNeeded: number;
+  currentSignups: number;
   status: 'open' | 'full' | 'closed';
   createdAt: string;
 }
