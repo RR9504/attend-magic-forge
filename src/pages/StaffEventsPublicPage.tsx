@@ -131,8 +131,6 @@ function StaffEventCard({
   const [showForm, setShowForm] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
   const [nameError, setNameError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -146,8 +144,6 @@ function StaffEventCard({
       {
         eventId: event.id,
         name: name.trim(),
-        email: email.trim() || undefined,
-        phone: phone.trim() || undefined,
       },
       {
         onSuccess: () => {
@@ -218,61 +214,37 @@ function StaffEventCard({
             </span>
           </div>
         ) : showForm ? (
-          <form onSubmit={handleSubmit} className="space-y-3 pt-3 border-t border-border animate-fade-in">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="space-y-1">
-                <Label htmlFor={`name-${event.id}`} className="text-xs">Namn *</Label>
-                <Input
-                  id={`name-${event.id}`}
-                  value={name}
-                  onChange={(e) => { setName(e.target.value); setNameError(''); }}
-                  placeholder="Ditt namn"
-                  className={cn(nameError && "border-destructive")}
-                />
-                {nameError && (
-                  <p className="text-xs text-destructive flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" />{nameError}
-                  </p>
-                )}
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor={`email-${event.id}`} className="text-xs">E-post</Label>
-                <Input
-                  id={`email-${event.id}`}
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="din@email.se"
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor={`phone-${event.id}`} className="text-xs">Telefon</Label>
-                <Input
-                  id={`phone-${event.id}`}
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="070-123 45 67"
-                />
-              </div>
+          <form onSubmit={handleSubmit} className="flex items-end gap-2 pt-3 border-t border-border animate-fade-in">
+            <div className="flex-1 space-y-1">
+              <Label htmlFor={`name-${event.id}`} className="text-xs">Namn *</Label>
+              <Input
+                id={`name-${event.id}`}
+                value={name}
+                onChange={(e) => { setName(e.target.value); setNameError(''); }}
+                placeholder="Ditt namn"
+                className={cn(nameError && "border-destructive")}
+              />
+              {nameError && (
+                <p className="text-xs text-destructive flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />{nameError}
+                </p>
+              )}
             </div>
-            <div className="flex gap-2">
-              <Button
-                type="submit"
-                size="sm"
-                disabled={createSignupMutation.isPending}
-              >
-                {createSignupMutation.isPending ? 'Skickar...' : 'Anmäl mig'}
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowForm(false)}
-              >
-                Avbryt
-              </Button>
-            </div>
+            <Button
+              type="submit"
+              size="sm"
+              disabled={createSignupMutation.isPending}
+            >
+              {createSignupMutation.isPending ? 'Skickar...' : 'Anmäl mig'}
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowForm(false)}
+            >
+              Avbryt
+            </Button>
           </form>
         ) : (
           <Button

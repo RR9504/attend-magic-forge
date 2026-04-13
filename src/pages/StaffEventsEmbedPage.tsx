@@ -100,8 +100,6 @@ function EmbedEventCard({
   const [showForm, setShowForm] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
   const [nameError, setNameError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -115,8 +113,6 @@ function EmbedEventCard({
       {
         eventId: event.id,
         name: name.trim(),
-        email: email.trim() || undefined,
-        phone: phone.trim() || undefined,
       },
       {
         onSuccess: () => {
@@ -153,8 +149,8 @@ function EmbedEventCard({
           <span className="text-xs text-muted-foreground">— {formatDate(event.date)}</span>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-2">
-          <div className="space-y-1">
+        <form onSubmit={handleSubmit} className="flex items-end gap-2">
+          <div className="flex-1 space-y-1">
             <Label htmlFor={`embed-name-${event.id}`} className="text-xs">Namn *</Label>
             <Input
               id={`embed-name-${event.id}`}
@@ -169,34 +165,9 @@ function EmbedEventCard({
               </p>
             )}
           </div>
-          <div className="grid grid-cols-2 gap-2">
-            <div className="space-y-1">
-              <Label htmlFor={`embed-email-${event.id}`} className="text-xs">E-post</Label>
-              <Input
-                id={`embed-email-${event.id}`}
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="din@email.se"
-                className="h-9 text-sm"
-              />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor={`embed-phone-${event.id}`} className="text-xs">Telefon</Label>
-              <Input
-                id={`embed-phone-${event.id}`}
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="070-123 45 67"
-                className="h-9 text-sm"
-              />
-            </div>
-          </div>
           <Button
             type="submit"
             size="sm"
-            className="w-full"
             disabled={createSignupMutation.isPending}
           >
             {createSignupMutation.isPending ? 'Skickar...' : 'Anmäl mig'}
