@@ -293,21 +293,84 @@ export default function StaffEventsAdminPage() {
             </p>
           </div>
         ) : (
-          <div className="space-y-3">
-            {staffEvents.map((event, index) => (
-              <StaffEventRow
-                key={event.id}
-                event={event}
-                index={index}
-                isExpanded={expandedId === event.id}
-                onToggleExpand={() => setExpandedId(expandedId === event.id ? null : event.id)}
-                onEdit={() => handleEdit(event)}
-                onDelete={() => handleDelete(event.id)}
-                statusLabel={statusLabel}
-                statusVariant={statusVariant}
-                formatDate={formatDate}
-              />
-            ))}
+          <div className="space-y-8">
+            {/* Lediga platser */}
+            {(() => {
+              const available = staffEvents.filter(e => e.status === 'open' && e.currentSignups < e.staffNeeded);
+              return available.length > 0 ? (
+                <div className="space-y-3">
+                  <h2 className="font-display text-lg font-semibold text-foreground">
+                    Lediga platser ({available.length})
+                  </h2>
+                  {available.map((event, index) => (
+                    <StaffEventRow
+                      key={event.id}
+                      event={event}
+                      index={index}
+                      isExpanded={expandedId === event.id}
+                      onToggleExpand={() => setExpandedId(expandedId === event.id ? null : event.id)}
+                      onEdit={() => handleEdit(event)}
+                      onDelete={() => handleDelete(event.id)}
+                      statusLabel={statusLabel}
+                      statusVariant={statusVariant}
+                      formatDate={formatDate}
+                    />
+                  ))}
+                </div>
+              ) : null;
+            })()}
+
+            {/* Fullbokade */}
+            {(() => {
+              const full = staffEvents.filter(e => e.status === 'full' || (e.status === 'open' && e.currentSignups >= e.staffNeeded));
+              return full.length > 0 ? (
+                <div className="space-y-3">
+                  <h2 className="font-display text-lg font-semibold text-muted-foreground">
+                    Fullbokade ({full.length})
+                  </h2>
+                  {full.map((event, index) => (
+                    <StaffEventRow
+                      key={event.id}
+                      event={event}
+                      index={index}
+                      isExpanded={expandedId === event.id}
+                      onToggleExpand={() => setExpandedId(expandedId === event.id ? null : event.id)}
+                      onEdit={() => handleEdit(event)}
+                      onDelete={() => handleDelete(event.id)}
+                      statusLabel={statusLabel}
+                      statusVariant={statusVariant}
+                      formatDate={formatDate}
+                    />
+                  ))}
+                </div>
+              ) : null;
+            })()}
+
+            {/* Stängda */}
+            {(() => {
+              const closed = staffEvents.filter(e => e.status === 'closed');
+              return closed.length > 0 ? (
+                <div className="space-y-3">
+                  <h2 className="font-display text-lg font-semibold text-muted-foreground">
+                    Stängda ({closed.length})
+                  </h2>
+                  {closed.map((event, index) => (
+                    <StaffEventRow
+                      key={event.id}
+                      event={event}
+                      index={index}
+                      isExpanded={expandedId === event.id}
+                      onToggleExpand={() => setExpandedId(expandedId === event.id ? null : event.id)}
+                      onEdit={() => handleEdit(event)}
+                      onDelete={() => handleDelete(event.id)}
+                      statusLabel={statusLabel}
+                      statusVariant={statusVariant}
+                      formatDate={formatDate}
+                    />
+                  ))}
+                </div>
+              ) : null;
+            })()}
           </div>
         )}
       </div>
