@@ -7,7 +7,8 @@ import {
   Plus,
   LogOut,
   Ticket,
-  Store
+  Store,
+  UsersRound
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
@@ -16,6 +17,7 @@ const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Kampanjer', href: '/dashboard/campaigns', icon: Ticket },
   { name: 'Butiker', href: '/dashboard/stores', icon: Store },
+  { name: 'Intern bemanning', href: '/dashboard/staff-events', icon: UsersRound },
 ];
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {

@@ -208,6 +208,77 @@ export type Database = {
           },
         ]
       }
+      staff_events: {
+        Row: {
+          id: string
+          title: string
+          description: string | null
+          date: string
+          time: string | null
+          location: string | null
+          staff_needed: number
+          status: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          description?: string | null
+          date: string
+          time?: string | null
+          location?: string | null
+          staff_needed?: number
+          status?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          description?: string | null
+          date?: string
+          time?: string | null
+          location?: string | null
+          staff_needed?: number
+          status?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+      staff_signups: {
+        Row: {
+          id: string
+          event_id: string
+          name: string
+          email: string | null
+          phone: string | null
+          signed_up_at: string
+        }
+        Insert: {
+          id?: string
+          event_id: string
+          name: string
+          email?: string | null
+          phone?: string | null
+          signed_up_at?: string
+        }
+        Update: {
+          id?: string
+          event_id?: string
+          name?: string
+          email?: string | null
+          phone?: string | null
+          signed_up_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_signups_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "staff_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stores: {
         Row: {
           id: string
