@@ -5,12 +5,14 @@ import { useCampaign, useUpdateCampaign } from '@/hooks/useCampaigns';
 import { useCampaignEntries } from '@/hooks/useCampaignEntries';
 import { useCampaignStores, useSetCampaignStores } from '@/hooks/useCampaignStores';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { ArrowLeft, ExternalLink, Copy } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Copy, QrCode } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Campaign } from '@/types/campaign';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import QRCode from 'react-qr-code';
 
 export default function EditCampaignPage() {
   const { id } = useParams<{ id: string }>();
@@ -102,10 +104,11 @@ export default function EditCampaignPage() {
 
         {/* Tabs */}
         <Tabs defaultValue="entries" className="animate-fade-in stagger-1">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsList className="grid w-full max-w-md grid-cols-3">
             <TabsTrigger value="entries">
               Deltagare ({entries.length})
             </TabsTrigger>
+            <TabsTrigger value="qr">QR-kod</TabsTrigger>
             <TabsTrigger value="settings">Inställningar</TabsTrigger>
           </TabsList>
 
@@ -115,6 +118,83 @@ export default function EditCampaignPage() {
               entries={entries}
               stores={campaignStores}
             />
+          </TabsContent>
+
+          <TabsContent value="qr" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-display flex items-center gap-2">
+                  <QrCode className="w-5 h-5" />
+                  QR-kod för kampanjen
+                </CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Skriv ut denna QR-kod och placera den i butikerna. Kunder skannar koden för att delta.
+                </p>
+              </CardHeader>
+              <CardContent className="flex flex-col items-center gap-6">
+                <div className="bg-white p-6 rounded-xl shadow-sm border" id="qr-code-container">
+                  <QRCode
+                    value={`${window.location.origin}/campaign/${id}`}
+                    size={256}
+                    level="H"
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground text-center max-w-sm">
+                  {`${window.location.origin}/campaign/${id}`}
+                </p>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      const svg = document.querySelector('#qr-code-container svg');
+                      if (!svg) return;
+                      const svgData = new XMLSerializer().serializeToString(svg);
+                      const canvas = document.createElement('canvas');
+                      canvas.width = 512;
+                      canvas.height = 512;
+                      const ctx = canvas.getContext('2d');
+                      const img = new Image();
+                      img.onload = () => {
+                        ctx!.fillStyle = 'white';
+                        ctx!.fillRect(0, 0, 512, 512);
+                        ctx!.drawImage(img, 0, 0, 512, 512);
+                        const link = document.createElement('a');
+                        link.download = `${campaign.title.replace(/\s+/g, '_')}_qr.png`;
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                      };
+                      img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+                    }}
+                  >
+                    Ladda ner PNG
+                  </Button>
+                  <Button
+                    variant="default"
+                    onClick={() => {
+                      const printWindow = window.open('', '_blank');
+                      if (!printWindow) return;
+                      const svg = document.querySelector('#qr-code-container svg');
+                      if (!svg) return;
+                      const svgHtml = svg.outerHTML;
+                      printWindow.document.write(`
+                        <html>
+                          <head><title>QR - ${campaign.title}</title></head>
+                          <body style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;font-family:sans-serif;">
+                            <h2 style="margin-bottom:8px">${campaign.title}</h2>
+                            <p style="margin-bottom:24px;color:#666">Skanna QR-koden för att delta i utlottningen</p>
+                            <div style="padding:24px;border:1px solid #eee;border-radius:12px;">${svgHtml}</div>
+                          </body>
+                        </html>
+                      `);
+                      printWindow.document.close();
+                      printWindow.print();
+                    }}
+                  >
+                    Skriv ut
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="settings" className="mt-6">
