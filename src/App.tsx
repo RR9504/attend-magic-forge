@@ -14,6 +14,7 @@ import CampaignPublicPage from "./pages/CampaignPublicPage";
 import StoresPage from "./pages/StoresPage";
 import StaffEventsAdminPage from "./pages/StaffEventsAdminPage";
 import StaffEventsPublicPage from "./pages/StaffEventsPublicPage";
+import StaffEventsEmbedPage from "./pages/StaffEventsEmbedPage";
 import AuthPage from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/dashboard/stores" element={<ProtectedRoute><StoresPage /></ProtectedRoute>} />
           <Route path="/dashboard/staff-events" element={<ProtectedRoute><StaffEventsAdminPage /></ProtectedRoute>} />
           <Route path="/intern" element={<StaffEventsPublicPage />} />
+          <Route path="/intern/embed" element={<StaffEventsEmbedPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
