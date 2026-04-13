@@ -1,6 +1,5 @@
 import { useStores } from '@/hooks/useStores';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
 import { Store as StoreIcon } from 'lucide-react';
 
 interface StoreSelectorProps {
@@ -44,10 +43,10 @@ export function StoreSelector({ selectedStoreIds, onChange }: StoreSelectorProps
         >
           <Checkbox
             checked={selectedStoreIds.includes(store.id)}
-            onCheckedChange={() => toggleStore(store.id)}
+            onCheckedChange={() => {}}
           />
           <div className="flex-1 min-w-0">
-            <Label className="cursor-pointer font-medium">{store.name}</Label>
+            <span className="font-medium">{store.name}</span>
             {store.address && (
               <p className="text-xs text-muted-foreground">{store.address}</p>
             )}
