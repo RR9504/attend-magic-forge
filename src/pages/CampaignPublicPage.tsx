@@ -444,7 +444,15 @@ export default function CampaignPublicPage() {
                         className="mt-0.5"
                       />
                       <Label htmlFor="privacy-policy" className="cursor-pointer text-sm leading-relaxed">
-                        Jag godkänner att mina personuppgifter behandlas i samband med denna kampanj
+                        Jag godkänner att mina personuppgifter behandlas enligt{' '}
+                        <a
+                          href="https://www.smsparbank.se/bedrageri-och-sakerhet/banksekretess-och-integritet/behandling-av-personuppgifter.html"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary underline hover:text-primary/80"
+                        >
+                          Sölvesborg Mjällby Sparbanks integritetspolicy
+                        </a>
                         <span className="text-destructive ml-1">*</span>
                       </Label>
                     </div>
